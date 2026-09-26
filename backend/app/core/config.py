@@ -75,16 +75,33 @@ def _sqlite_url(raw_url: str) -> str:
     return f"{prefix}{BACKEND_ROOT / path_part}"
 
 
+# --- Environment -----------------------------------------------------------
+# "local" during development, "production" on a deployed host. Informational
+# only: it never changes behaviour, it just makes a deployed instance
+# self-identifying in logs and in the health endpoint.
+ENVIRONMENT = os.getenv("ENVIRONMENT", "local").strip().lower() or "local"
+IS_PRODUCTION = ENVIRONMENT == "production"
+
 # --- Database --------------------------------------------------------------
-# Two ways to point at the database:
-#   DATABASE_PATH  - just the SQLite file. Preferred, unambiguous.
-#   DATABASE_URL   - a full SQLAlchemy URL, for an absolute path or a future
-#                    non-SQLite backend.
+# Three ways to point at the database, in precedence order:
+#   DATABASE_URL   - a full SQLAlchemy URL. Use this for a hosted database,
+#                    e.g. a Neon PostgreSQL connection string. The value is
+#                    passed through untouched apart from anchoring relative
+#                    SQLite paths, so hosted URLs work as pasted.
+#   DATABASE_PATH  - just a SQLite file. Used when DATABASE_URL is unset.
+#   default        - backend/smartcycle.db, unchanged for local development.
+#
+# Credentials belong in the environment or the platform's secret store and must
+# never be committed.
 DATABASE_PATH = _resolve_path(
     os.getenv("DATABASE_PATH", "smartcycle.db"),
     BACKEND_ROOT,
 )
 DATABASE_URL = _sqlite_url(os.getenv("DATABASE_URL", "")) or f"sqlite:///{DATABASE_PATH}"
+
+# True for any hosted client-server database (PostgreSQL and anything else that
+# is not a local SQLite file). Drives pool and pragma decisions below.
+IS_SQLITE = DATABASE_URL.startswith("sqlite")
 
 # --- CORS ------------------------------------------------------------------
 # Local development origins are built in and always kept, so a fresh clone

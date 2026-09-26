@@ -6,3 +6,11 @@ PyJWT
 email-validator
 scikit-learn
 python-dotenv
+
+# PostgreSQL driver, used only when DATABASE_URL points at a hosted database
+# (local development keeps using SQLite and never imports this).
+#
+# SQLAlchemy 2.x maps a bare `postgresql://` URL to psycopg 3, which is what
+# hosted providers hand out, so this is the driver that makes a pasted
+# connection string work with no editing.
+psycopg[binary]

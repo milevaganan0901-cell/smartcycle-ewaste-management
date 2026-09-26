@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter
 
+from app.core.config import ENVIRONMENT, IS_SQLITE
 from app.schemas.health import HealthResponse
 
 
@@ -12,10 +13,10 @@ router = APIRouter(tags=["system"])
 def health_check() -> HealthResponse:
     """Confirm that the API process is running.
 
-    `version` tracks `app.version` so a deployed instance can be identified
-    without guessing. The previous hard-coded `stage` field reported
-    "stage-3g" from Stage 3G onwards and is replaced rather than kept, because
-    a stale stage label in a health check is worse than no label at all.
+    Reports the version, the environment name, and which database engine is
+    configured. This is deliberately non-sensitive: it names the engine, never
+    a host, database name, username or password, so it is safe to expose on a
+    public deployment and useful for confirming which build is live.
     """
     from app.main import app
 
@@ -23,4 +24,6 @@ def health_check() -> HealthResponse:
         status="ok",
         service="SmartCycle API",
         version=app.version,
+        environment=ENVIRONMENT,
+        database="sqlite" if IS_SQLITE else "postgresql",
     )

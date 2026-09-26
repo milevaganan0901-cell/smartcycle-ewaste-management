@@ -1,16 +1,39 @@
-"""Database engine, session factory, and FastAPI dependency."""
+"""Database engine, session factory, and FastAPI dependency.
+
+The engine is driven entirely by ``DATABASE_URL``, so the same code runs against
+a local SQLite file during development and a hosted PostgreSQL instance in a
+deployment, with no source change and no committed credentials.
+"""
 
 from collections.abc import Generator
 
 from sqlalchemy import create_engine, event, inspect, text
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.core.config import DATABASE_URL
+from app.core.config import DATABASE_URL, IS_SQLITE
 from app.db.base import Base
 
 
-connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
-engine = create_engine(DATABASE_URL, connect_args=connect_args, pool_pre_ping=True)
+# SQLite needs this for the FastAPI threadpool; hosted databases reject it.
+connect_args = {"check_same_thread": False} if IS_SQLITE else {}
+
+if IS_SQLITE:
+    engine = create_engine(DATABASE_URL, connect_args=connect_args, pool_pre_ping=True)
+else:
+    # Hosted client-server database. `pool_pre_ping` avoids handing out dead
+    # connections after an idle period, and `pool_recycle` plus a small pool
+    # keep the app friendly to serverless platforms that scale to zero and
+    # aggressively close idle connections.
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args=connect_args,
+        pool_pre_ping=True,
+        pool_recycle=300,
+        pool_size=5,
+        max_overflow=5,
+        pool_timeout=30,
+    )
+
 SessionLocal = sessionmaker(
     bind=engine,
     autocommit=False,
@@ -19,7 +42,7 @@ SessionLocal = sessionmaker(
 )
 
 
-if DATABASE_URL.startswith("sqlite"):
+if IS_SQLITE:
 
     @event.listens_for(engine, "connect")
     def _enable_sqlite_foreign_keys(dbapi_connection, _connection_record) -> None:
