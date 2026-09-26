@@ -1,0 +1,109 @@
+# =============================================================================
+# SmartCycle .gitignore
+# =============================================================================
+
+# --- Python virtual environments ---------------------------------------------
+.venv/
+venv/
+env/
+
+# --- Python caches and generated files ---------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- Node dependencies and build output --------------------------------------
+node_modules/
+dist/
+build/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Local environment files --------------------------------------------------
+# Real configuration and secrets. Only the *.example templates are committed.
+.env
+.env.*
+!.env.example
+
+# --- Local SQLite databases ---------------------------------------------------
+# DELIBERATE DECISION: the database is NOT committed.
+#
+# This is not a blanket "ignore all databases" rule. It is a considered choice,
+# because backend/smartcycle.db contains real records: user accounts with
+# Argon2 password hashes, device submissions with owner names, email addresses,
+# street addresses and locations, and pickup requests with collection
+# addresses. Committing it would publish personal data and a credential
+# database to anyone who clones the repository, and it would grow on every run.
+#
+# The application does not need it: `init_db()` creates the schema on first
+# start, and a fresh clone gets an empty, fully working system. To reproduce the
+# demo data, register a user, submit devices, and create an admin with
+#   python -m app.scripts.create_admin
+#
+# If a seeded database were ever wanted for a demo, the correct approach is a
+# separate, deliberately sanitised fixture (no real emails, addresses or
+# password hashes) plus a documented seeding script - not this working file.
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+
+# --- Trained ML artifacts -----------------------------------------------------
+# backend/data/valuation_model.joblib is a ~3.9 MB binary derived entirely from
+# the committed synthetic dataset, so it is fully regenerable with:
+#   python -m app.scripts.train_valuation_model
+#
+# It is deliberately not committed: it is a build output, not source. The API
+# does not require it - when the file is absent the rule-based estimator is
+# used automatically and each result is labelled "rule_based".
+#
+# The dataset and the metrics sidecar ARE committed, because they are small,
+# human-readable and needed to understand and reproduce the training.
+backend/data/*.joblib
+backend/data/*.pkl
+backend/data/*.h5
+
+# --- Logs and temporary files -------------------------------------------------
+*.log
+logs/
+tmp/
+temp/
+.cache/
+*.tmp
+*.bak
+*.orig
+*.swp
+*~
+
+# --- Local agent / tooling artifacts ------------------------------------------
+# Session transcripts and scratch files produced by development tools. They can
+# contain internal identifiers and raw conversation content, so they must never
+# enter the repository.
+*-project-plan.json
+*.session.json
+.agent/
+.codex/
+
+# --- Editor and operating-system files ----------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project

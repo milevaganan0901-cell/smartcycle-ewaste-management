@@ -1,0 +1,146 @@
+{
+  "model_name": "GradientBoostingRegressor",
+  "model_type": "GradientBoostingRegressor (predicts a depreciation ratio)",
+  "pipeline": "ColumnTransformer(SimpleImputer + OneHotEncoder(handle_unknown='ignore') + SimpleImputer(median)) -> GradientBoostingRegressor(n_estimators=500, max_depth=4, learning_rate=0.05)",
+  "trained_at": "2026-09-26T09:57:35.582105+00:00",
+  "dataset_identifier": "valuation_demo_dataset.csv",
+  "dataset_kind": "synthetic_development",
+  "target": "estimated_purchase_value",
+  "internal_target": "depreciation_ratio",
+  "random_state": 42,
+  "test_size": 0.2,
+  "cv_folds": 5,
+  "total_rows": 420,
+  "training_rows": 336,
+  "test_rows": 84,
+  "features": [
+    "device_category",
+    "brand",
+    "age",
+    "condition",
+    "working_status",
+    "physical_damage",
+    "original_purchase_price"
+  ],
+  "library_versions": {
+    "scikit-learn": "1.9.1",
+    "numpy": "2.5.3",
+    "joblib": "1.6.0"
+  },
+  "metrics": {
+    "mae": 822.1194,
+    "rmse": 1488.1552,
+    "r2": 0.9916
+  },
+  "metrics_note": "MAE/RMSE are in rupees on the estimated-value scale; R^2 is computed on the same scale. These are held-out test-split figures.",
+  "cross_validation": {
+    "folds": 5,
+    "mean_mae": 1673.1866,
+    "mean_rmse": 3037.1817,
+    "mean_r2": 0.9435,
+    "note": "Mean over all candidate models, shown for context. Per-model figures are in model_comparison."
+  },
+  "model_comparison": {
+    "LinearRegression": {
+      "mae": 2317.8871,
+      "rmse": 3824.8651,
+      "r2": 0.9177
+    },
+    "Ridge(alpha=1.0)": {
+      "mae": 2279.3834,
+      "rmse": 3787.2839,
+      "r2": 0.9193
+    },
+    "RandomForestRegressor": {
+      "mae": 1321.3333,
+      "rmse": 2934.2485,
+      "r2": 0.9516
+    },
+    "GradientBoostingRegressor": {
+      "mae": 774.1424,
+      "rmse": 1602.3291,
+      "r2": 0.9856
+    }
+  },
+  "model_selection_note": "Selected 'GradientBoostingRegressor' by lowest cross-validated MAE. The held-out split was not used for selection.",
+  "baselines": {
+    "mean_predictor": {
+      "mae": 10582.1683,
+      "rmse": 16363.6461,
+      "r2": -0.019
+    },
+    "rule_based_estimator": {
+      "mae": 287.3076,
+      "rmse": 585.0966,
+      "r2": 0.9987
+    }
+  },
+  "baseline_note": "The rule-based estimator scores very highly here because this dataset's target was generated from that same formula. It is not evidence of real-world accuracy for either method.",
+  "training_distribution": {
+    "age_min": 0,
+    "age_max": 9,
+    "price_min": 600.0,
+    "price_max": 236500.0,
+    "known_categories": {
+      "device_category": [
+        "Accessories",
+        "Desktop computer",
+        "Laptop",
+        "Monitor",
+        "Other electronics",
+        "Printer",
+        "Smartphone",
+        "Tablet",
+        "Television"
+      ],
+      "brand": [
+        "Acer",
+        "Anker",
+        "Apple",
+        "Asus",
+        "Belkin",
+        "BenQ",
+        "Brother",
+        "Canon",
+        "Dell",
+        "Epson",
+        "Generic",
+        "Google",
+        "HP",
+        "LG",
+        "Lenovo",
+        "Logitech",
+        "MSI",
+        "Microsoft",
+        "Misc",
+        "OnePlus",
+        "Panasonic",
+        "Realme",
+        "Samsung",
+        "Sony",
+        "TCL",
+        "Xiaomi"
+      ],
+      "condition": [
+        "Excellent",
+        "Fair",
+        "Good",
+        "Not Working",
+        "Poor"
+      ],
+      "working_status": [
+        "Fully Working",
+        "Not Working",
+        "Partially Working"
+      ],
+      "physical_damage": [
+        "Cracks or major damage",
+        "Minor scratches",
+        "None"
+      ]
+    }
+  },
+  "metrics_ceiling_note": "About 13% of target rows sit exactly on the Rs 500 minimum-value floor. Those rows share one identical target, so no regression model can separate them; that caps the achievable fit on this dataset.",
+  "disclaimer": "DEVELOPMENT/DEMO MODEL. Trained on a synthetic dataset generated from the project's own rule-based formula. The metrics above do not represent live or real-world market prices and must not be read as market accuracy.",
+  "fallback_method": "rule_based"
+}

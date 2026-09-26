@@ -1,0 +1,421 @@
+device_category,brand,age,condition,working_status,physical_damage,original_purchase_price,estimated_purchase_value
+Laptop,Apple,0,Not Working,Fully Working,Cracks or major damage,215700.0,31027.1
+Accessories,Anker,3,Good,Not Working,Cracks or major damage,,500.0
+Other electronics,Generic,9,Not Working,Partially Working,Cracks or major damage,3300.0,500.0
+Television,LG,4,Good,Partially Working,None,60000.0,21343.16
+Other electronics,Misc,0,Excellent,Fully Working,Cracks or major damage,5000.0,3841.27
+Tablet,Microsoft,1,Not Working,Fully Working,Minor scratches,,4605.53
+Desktop computer,Apple,5,Excellent,Not Working,None,130100.0,22138.56
+Monitor,Acer,0,Excellent,Fully Working,Minor scratches,,12772.17
+Desktop computer,Dell,8,Poor,Partially Working,None,,2678.06
+Tablet,Microsoft,7,Poor,Partially Working,Minor scratches,77500.0,8282.56
+Other electronics,Generic,6,Fair,Not Working,None,,500.0
+Smartphone,Xiaomi,3,Poor,Fully Working,None,15400.0,4507.03
+Laptop,Lenovo,5,Fair,Not Working,Minor scratches,64200.0,7129.01
+Printer,HP,4,Excellent,Not Working,Cracks or major damage,9000.0,1219.05
+Tablet,Lenovo,0,Good,Fully Working,Minor scratches,32100.0,28375.18
+Smartphone,OnePlus,0,Not Working,Partially Working,Minor scratches,65800.0,8629.94
+Monitor,Acer,5,Excellent,Not Working,Minor scratches,23600.0,3924.93
+Laptop,MSI,6,Excellent,Not Working,Minor scratches,149100.0,21169.91
+Other electronics,Misc,9,Poor,Fully Working,None,,636.07
+Printer,Epson,4,Fair,Fully Working,Minor scratches,11100.0,4521.61
+Laptop,Apple,1,Not Working,Fully Working,Cracks or major damage,215000.0,29349.46
+Smartphone,Apple,6,Not Working,Not Working,None,130300.0,3950.12
+Other electronics,Generic,1,Not Working,Fully Working,Minor scratches,,949.02
+Other electronics,Generic,1,Not Working,Not Working,None,7500.0,500.0
+Smartphone,Xiaomi,0,Good,Partially Working,Cracks or major damage,28700.0,11033.1
+Tablet,Microsoft,9,Excellent,Partially Working,Minor scratches,69200.0,14536.94
+Laptop,Dell,2,Fair,Fully Working,None,92600.0,49699.02
+Laptop,HP,6,Excellent,Fully Working,None,113500.0,58651.55
+Smartphone,Realme,8,Poor,Partially Working,None,15800.0,1463.75
+Smartphone,Samsung,7,Poor,Partially Working,Minor scratches,36500.0,3577.35
+Monitor,Samsung,4,Poor,Fully Working,None,33000.0,8105.6
+Monitor,LG,1,Excellent,Fully Working,None,31400.0,31328.12
+Laptop,Dell,3,Fair,Not Working,None,45400.0,6205.85
+Accessories,Generic,2,Not Working,Not Working,None,3000.0,500.0
+Laptop,Acer,6,Excellent,Partially Working,Minor scratches,86800.0,26483.7
+Desktop computer,Acer,7,Not Working,Fully Working,Cracks or major damage,77100.0,4746.65
+Desktop computer,HP,1,Not Working,Not Working,Cracks or major damage,66400.0,2531.24
+Television,Panasonic,2,Not Working,Partially Working,Minor scratches,47100.0,4697.6
+Printer,Brother,6,Fair,Partially Working,Cracks or major damage,,980.5
+Monitor,LG,0,Fair,Fully Working,Minor scratches,23500.0,15222.3
+Desktop computer,Dell,0,Fair,Not Working,Minor scratches,,5849.31
+Laptop,Acer,1,Not Working,Fully Working,Minor scratches,,9453.23
+Desktop computer,Dell,1,Poor,Partially Working,Minor scratches,80200.0,16990.37
+Smartphone,Google,1,Good,Fully Working,Minor scratches,40500.0,32819.5
+Printer,Brother,5,Excellent,Partially Working,Cracks or major damage,24500.0,6006.64
+Other electronics,Misc,6,Fair,Not Working,Minor scratches,6600.0,612.81
+Smartphone,Google,3,Fair,Fully Working,None,56000.0,26688.48
+Television,TCL,2,Good,Fully Working,Cracks or major damage,26900.0,13196.04
+Accessories,Generic,3,Not Working,Not Working,Minor scratches,2600.0,500.0
+Accessories,Anker,0,Good,Not Working,Cracks or major damage,6700.0,1294.94
+Smartphone,Google,4,Good,Fully Working,Minor scratches,79900.0,44389.68
+Smartphone,Samsung,1,Good,Fully Working,None,82700.0,70056.3
+Printer,Brother,9,Not Working,Partially Working,None,6100.0,500.0
+Desktop computer,Dell,3,Excellent,Fully Working,None,,22740.6
+Tablet,Apple,2,Excellent,Not Working,Cracks or major damage,107400.0,19310.27
+Laptop,HP,5,Good,Fully Working,Cracks or major damage,37100.0,12052.34
+Smartphone,Samsung,2,Fair,Partially Working,Minor scratches,70200.0,23714.81
+Accessories,Belkin,1,Not Working,Partially Working,Cracks or major damage,3200.0,500.0
+Monitor,Samsung,4,Excellent,Fully Working,Cracks or major damage,,5486.22
+Television,Sony,3,Poor,Fully Working,None,214600.0,59554.2
+Printer,Epson,2,Good,Not Working,Minor scratches,23100.0,4580.15
+Smartphone,Google,4,Fair,Fully Working,Cracks or major damage,46900.0,13377.44
+Laptop,Acer,6,Fair,Fully Working,None,88900.0,27542.27
+Television,LG,8,Fair,Partially Working,Cracks or major damage,,2004.49
+Desktop computer,Acer,4,Fair,Fully Working,Minor scratches,55500.0,22443.04
+Smartphone,Xiaomi,9,Not Working,Partially Working,None,,1346.17
+Printer,Epson,7,Fair,Fully Working,Minor scratches,20200.0,5431.47
+Tablet,Microsoft,6,Fair,Fully Working,Cracks or major damage,78100.0,16797.83
+Accessories,Anker,8,Not Working,Fully Working,Cracks or major damage,1600.0,500.0
+Other electronics,Generic,0,Good,Partially Working,None,,2788.74
+Laptop,HP,4,Excellent,Not Working,None,115200.0,23314.47
+Other electronics,Misc,1,Excellent,Not Working,Cracks or major damage,11400.0,2153.42
+Other electronics,Misc,0,Fair,Not Working,Minor scratches,2100.0,500.0
+Printer,Canon,8,Good,Not Working,None,16400.0,1680.73
+Other electronics,Generic,0,Poor,Fully Working,Cracks or major damage,,1455.89
+Desktop computer,Acer,6,Excellent,Fully Working,None,,15776.65
+Accessories,Logitech,1,Not Working,Not Working,Minor scratches,,500.0
+Laptop,MSI,8,Fair,Not Working,Minor scratches,55300.0,3925.8
+Tablet,Lenovo,0,Not Working,Not Working,Cracks or major damage,,1089.46
+Printer,Epson,4,Excellent,Fully Working,Minor scratches,,4252.6
+Printer,Brother,7,Not Working,Fully Working,Minor scratches,7900.0,701.92
+Monitor,Acer,1,Not Working,Partially Working,Minor scratches,7500.0,851.68
+Tablet,Microsoft,0,Fair,Partially Working,Minor scratches,42500.0,17976.72
+Printer,HP,0,Excellent,Partially Working,Cracks or major damage,11900.0,5570.63
+Monitor,Acer,7,Excellent,Partially Working,None,27100.0,7666.44
+Television,Panasonic,8,Excellent,Not Working,None,35800.0,4368.28
+Smartphone,Apple,4,Excellent,Not Working,None,91600.0,18300.73
+Printer,Epson,7,Poor,Not Working,Cracks or major damage,9900.0,500.0
+Accessories,Belkin,6,Good,Partially Working,None,4400.0,1142.41
+Desktop computer,Dell,9,Poor,Fully Working,None,,4104.71
+Laptop,Acer,1,Not Working,Not Working,Minor scratches,39700.0,2127.3
+Smartphone,Xiaomi,0,Not Working,Partially Working,None,27000.0,3645.17
+Printer,Brother,0,Not Working,Fully Working,None,6100.0,1348.6
+Monitor,Dell,5,Not Working,Partially Working,Cracks or major damage,43800.0,2205.39
+Tablet,Lenovo,3,Good,Not Working,Cracks or major damage,25100.0,3116.42
+Other electronics,Generic,2,Fair,Not Working,None,7600.0,1257.17
+Tablet,Lenovo,8,Poor,Partially Working,None,27000.0,2461.02
+Desktop computer,Dell,2,Fair,Not Working,Cracks or major damage,52900.0,5961.74
+Other electronics,Generic,9,Excellent,Not Working,None,4600.0,500.0
+Other electronics,Misc,8,Fair,Partially Working,Minor scratches,1900.0,500.0
+Monitor,Acer,6,Good,Partially Working,None,21400.0,5763.61
+Monitor,LG,9,Poor,Partially Working,Cracks or major damage,19300.0,1057.68
+Television,Sony,4,Poor,Fully Working,Cracks or major damage,198700.0,34123.99
+Accessories,Belkin,9,Excellent,Fully Working,Minor scratches,4500.0,1559.14
+Printer,HP,2,Poor,Fully Working,None,,2338.54
+Television,TCL,1,Good,Partially Working,None,48700.0,23684.06
+Laptop,Acer,6,Not Working,Fully Working,Cracks or major damage,57100.0,3806.21
+Television,Samsung,7,Good,Not Working,Cracks or major damage,84300.0,6579.85
+Other electronics,Misc,9,Good,Not Working,Minor scratches,2500.0,500.0
+Smartphone,Google,2,Poor,Fully Working,None,57500.0,19270.59
+Other electronics,Misc,6,Not Working,Not Working,Minor scratches,6400.0,500.0
+Tablet,Lenovo,0,Fair,Fully Working,None,25500.0,17118.56
+Printer,Canon,7,Not Working,Partially Working,Cracks or major damage,17100.0,634.01
+Printer,Brother,4,Good,Not Working,None,24900.0,4073.43
+Printer,Canon,4,Good,Fully Working,Cracks or major damage,6700.0,2429.4
+Laptop,MSI,8,Good,Fully Working,Minor scratches,139700.0,46185.68
+Tablet,Lenovo,9,Good,Partially Working,Cracks or major damage,26600.0,3157.84
+Printer,Canon,1,Poor,Fully Working,Minor scratches,11400.0,3903.04
+Monitor,BenQ,1,Excellent,Fully Working,None,46300.0,42643.69
+Smartphone,Samsung,7,Fair,Partially Working,Cracks or major damage,61700.0,7471.85
+Accessories,Anker,5,Good,Not Working,Cracks or major damage,4000.0,500.0
+Tablet,Apple,7,Excellent,Fully Working,None,91600.0,39887.08
+Monitor,Dell,5,Fair,Fully Working,Cracks or major damage,10200.0,2584.58
+Printer,HP,5,Not Working,Fully Working,Minor scratches,30400.0,3473.42
+Desktop computer,Acer,0,Poor,Partially Working,None,35600.0,9429.63
+Desktop computer,HP,9,Fair,Fully Working,Minor scratches,64200.0,13558.8
+Smartphone,Apple,7,Excellent,Partially Working,Minor scratches,60000.0,16557.4
+Monitor,Samsung,6,Fair,Not Working,None,,1119.51
+Tablet,Samsung,1,Not Working,Not Working,Cracks or major damage,22500.0,865.22
+Television,TCL,7,Excellent,Partially Working,Minor scratches,38000.0,10106.48
+Television,Sony,1,Poor,Not Working,None,236500.0,26432.33
+Monitor,Acer,7,Excellent,Not Working,Cracks or major damage,15300.0,1423.79
+Accessories,Logitech,8,Poor,Fully Working,Cracks or major damage,4900.0,500.0
+Tablet,Lenovo,5,Not Working,Fully Working,None,30700.0,3476.13
+Monitor,BenQ,3,Not Working,Fully Working,Minor scratches,31800.0,4520.75
+Desktop computer,Acer,0,Not Working,Partially Working,Cracks or major damage,78100.0,7320.91
+Laptop,Acer,9,Not Working,Fully Working,None,40100.0,2816.18
+Tablet,Apple,5,Excellent,Partially Working,Cracks or major damage,96200.0,24414.72
+Desktop computer,Acer,0,Excellent,Partially Working,Minor scratches,,19375.25
+Accessories,Generic,2,Fair,Fully Working,Minor scratches,,911.57
+Smartphone,Realme,3,Fair,Partially Working,Minor scratches,18600.0,5442.71
+Monitor,Samsung,2,Not Working,Fully Working,Cracks or major damage,37800.0,4303.82
+Monitor,Samsung,9,Good,Partially Working,None,34500.0,6513.15
+Tablet,Samsung,1,Not Working,Partially Working,None,34000.0,4116.43
+Desktop computer,Apple,1,Not Working,Fully Working,None,84700.0,16138.12
+Laptop,HP,7,Poor,Fully Working,Minor scratches,72900.0,11520.21
+Smartphone,Google,1,Fair,Not Working,Cracks or major damage,52200.0,6716.4
+Smartphone,Google,6,Not Working,Not Working,None,79100.0,2538.37
+Television,Panasonic,8,Excellent,Not Working,Cracks or major damage,,1523.81
+Laptop,MSI,5,Good,Fully Working,Cracks or major damage,,16746.27
+Other electronics,Generic,0,Not Working,Not Working,None,9400.0,609.19
+Desktop computer,Dell,3,Not Working,Fully Working,Cracks or major damage,47600.0,4731.65
+Smartphone,Xiaomi,1,Not Working,Fully Working,Minor scratches,16300.0,2892.5
+Other electronics,Misc,1,Good,Fully Working,None,11400.0,9397.5
+Desktop computer,Acer,5,Not Working,Partially Working,Cracks or major damage,77300.0,3771.95
+Laptop,Asus,0,Not Working,Not Working,Minor scratches,101900.0,6519.21
+Accessories,Anker,8,Poor,Partially Working,Cracks or major damage,2800.0,500.0
+Tablet,Lenovo,0,Poor,Not Working,None,39100.0,5022.51
+Television,Sony,2,Fair,Not Working,Minor scratches,106000.0,16921.25
+Other electronics,Misc,9,Fair,Fully Working,Minor scratches,6100.0,1304.51
+Smartphone,OnePlus,1,Excellent,Fully Working,Minor scratches,,26893.2
+Tablet,Apple,5,Not Working,Not Working,Cracks or major damage,51300.0,1168.84
+Tablet,Lenovo,6,Fair,Not Working,Cracks or major damage,41300.0,2728.89
+Accessories,Logitech,2,Excellent,Not Working,Cracks or major damage,,500.0
+Accessories,Logitech,0,Good,Fully Working,None,3300.0,3063.11
+Printer,Epson,0,Not Working,Not Working,None,12200.0,813.33
+Laptop,Asus,1,Good,Partially Working,None,,25739.38
+Tablet,Apple,5,Not Working,Fully Working,Minor scratches,48500.0,5504.57
+Laptop,Lenovo,9,Fair,Partially Working,Minor scratches,76400.0,9813.21
+Accessories,Belkin,8,Not Working,Not Working,Cracks or major damage,2900.0,500.0
+Printer,HP,0,Poor,Not Working,None,33900.0,4284.33
+Tablet,Apple,4,Fair,Partially Working,Cracks or major damage,33700.0,5725.82
+Monitor,Acer,8,Not Working,Partially Working,Cracks or major damage,16000.0,517.45
+Smartphone,Realme,4,Excellent,Partially Working,None,,12458.15
+Television,TCL,8,Excellent,Partially Working,None,29700.0,6951.77
+Accessories,Anker,0,Not Working,Partially Working,None,3000.0,500.0
+Desktop computer,Apple,7,Good,Partially Working,Cracks or major damage,,4560.56
+Television,Panasonic,2,Not Working,Not Working,Minor scratches,61200.0,2944.87
+Accessories,Generic,3,Poor,Not Working,Cracks or major damage,2800.0,500.0
+Other electronics,Generic,1,Good,Fully Working,Cracks or major damage,8000.0,4384.74
+Television,Sony,2,Poor,Fully Working,Minor scratches,218200.0,66440.82
+Monitor,LG,4,Excellent,Fully Working,Minor scratches,,7540.62
+Other electronics,Misc,7,Excellent,Partially Working,Cracks or major damage,7800.0,1467.61
+Monitor,Acer,2,Poor,Not Working,Cracks or major damage,9500.0,616.36
+Other electronics,Generic,0,Good,Partially Working,Minor scratches,7900.0,4390.17
+Other electronics,Misc,0,Good,Partially Working,Cracks or major damage,3500.0,1383.1
+Laptop,Acer,5,Excellent,Partially Working,Cracks or major damage,32600.0,7924.74
+Desktop computer,Apple,3,Fair,Fully Working,Cracks or major damage,,9321.08
+Laptop,Acer,1,Not Working,Fully Working,Cracks or major damage,91800.0,12597.21
+Tablet,Microsoft,9,Not Working,Partially Working,Cracks or major damage,,737.54
+Tablet,Samsung,9,Excellent,Partially Working,None,23800.0,4921.76
+Printer,HP,6,Not Working,Fully Working,Cracks or major damage,19300.0,1369.24
+Monitor,BenQ,7,Fair,Not Working,Cracks or major damage,23100.0,1319.93
+Desktop computer,Apple,4,Poor,Partially Working,Cracks or major damage,152400.0,15719.27
+Television,Sony,2,Poor,Fully Working,Minor scratches,137200.0,43687.28
+Laptop,Apple,6,Fair,Not Working,Minor scratches,213800.0,19595.28
+Laptop,Dell,2,Excellent,Fully Working,Cracks or major damage,124400.0,71724.45
+Desktop computer,Dell,1,Poor,Fully Working,Minor scratches,37900.0,13330.65
+Desktop computer,Dell,8,Good,Fully Working,Minor scratches,41900.0,12814.94
+Tablet,Samsung,0,Excellent,Partially Working,Minor scratches,57700.0,38777.63
+Monitor,Acer,2,Not Working,Not Working,Cracks or major damage,12300.0,500.0
+Printer,Brother,4,Fair,Not Working,Cracks or major damage,22900.0,2018.72
+Other electronics,Misc,6,Fair,Not Working,None,6200.0,626.27
+Monitor,Acer,5,Good,Partially Working,None,11600.0,3503.78
+Laptop,Dell,9,Not Working,Fully Working,Cracks or major damage,85300.0,4149.82
+Desktop computer,Acer,7,Poor,Fully Working,Minor scratches,,5131.87
+Accessories,Logitech,3,Poor,Not Working,None,5900.0,504.54
+Accessories,Anker,2,Good,Not Working,Cracks or major damage,4900.0,724.58
+Other electronics,Generic,4,Good,Not Working,Minor scratches,11300.0,1777.26
+Television,LG,3,Fair,Not Working,Cracks or major damage,49200.0,4596.41
+Accessories,Anker,7,Good,Partially Working,Cracks or major damage,,500.0
+Tablet,Lenovo,6,Not Working,Fully Working,Cracks or major damage,13900.0,930.03
+Tablet,Microsoft,7,Poor,Not Working,Minor scratches,48500.0,2443.21
+Monitor,Samsung,7,Good,Fully Working,Cracks or major damage,32600.0,8228.87
+Desktop computer,Dell,5,Good,Fully Working,Minor scratches,91600.0,43721.66
+Television,LG,6,Good,Partially Working,None,78600.0,20784.02
+Monitor,Samsung,0,Poor,Partially Working,None,10800.0,2880.52
+Television,Panasonic,9,Excellent,Fully Working,Minor scratches,41800.0,14458.16
+Desktop computer,Acer,8,Fair,Not Working,Minor scratches,48900.0,3385.82
+Other electronics,Misc,5,Excellent,Fully Working,Minor scratches,6000.0,3369.66
+Accessories,Belkin,6,Good,Not Working,Cracks or major damage,2600.0,500.0
+Television,TCL,5,Excellent,Partially Working,Cracks or major damage,,4518.87
+Smartphone,Samsung,0,Poor,Partially Working,Minor scratches,35500.0,9071.37
+Monitor,Dell,5,Poor,Fully Working,Cracks or major damage,11600.0,1792.26
+Accessories,Generic,5,Fair,Fully Working,Minor scratches,2900.0,982.71
+Smartphone,OnePlus,9,Not Working,Partially Working,Minor scratches,38300.0,1549.05
+Desktop computer,Apple,4,Fair,Partially Working,None,86300.0,21707.45
+Smartphone,Realme,5,Not Working,Not Working,None,15600.0,560.25
+Television,Samsung,3,Fair,Fully Working,None,,8436.58
+Accessories,Generic,3,Excellent,Partially Working,None,2500.0,1152.22
+Other electronics,Misc,8,Poor,Partially Working,None,1100.0,500.0
+Smartphone,OnePlus,1,Good,Not Working,Cracks or major damage,54300.0,8556.67
+Monitor,Samsung,2,Excellent,Fully Working,Minor scratches,11700.0,9125.6
+Laptop,Apple,8,Excellent,Fully Working,Cracks or major damage,190600.0,49938.4
+Other electronics,Misc,7,Fair,Partially Working,Minor scratches,1700.0,500.0
+Printer,Brother,3,Not Working,Not Working,None,5900.0,500.0
+Accessories,Belkin,9,Poor,Fully Working,Minor scratches,,500.0
+Smartphone,Google,8,Good,Fully Working,Minor scratches,33500.0,10426.63
+Tablet,Microsoft,4,Poor,Fully Working,None,59900.0,15804.91
+Other electronics,Misc,9,Fair,Fully Working,Minor scratches,5500.0,1217.5
+Desktop computer,Dell,6,Poor,Not Working,Cracks or major damage,46900.0,1811.81
+Monitor,Samsung,8,Fair,Partially Working,Minor scratches,16000.0,2425.65
+Monitor,BenQ,2,Fair,Fully Working,None,33000.0,17194.67
+Other electronics,Misc,0,Excellent,Partially Working,None,,3386.13
+Television,Panasonic,5,Good,Not Working,None,24500.0,3425.52
+Monitor,Dell,6,Not Working,Partially Working,None,36100.0,2214.67
+Smartphone,Realme,1,Good,Partially Working,Cracks or major damage,20100.0,7160.47
+Television,Samsung,3,Not Working,Not Working,Minor scratches,38900.0,1678.56
+Laptop,MSI,3,Not Working,Fully Working,Minor scratches,,7157.63
+Desktop computer,Dell,6,Not Working,Not Working,None,61000.0,1847.81
+Laptop,Asus,9,Not Working,Fully Working,Minor scratches,33000.0,2241.28
+Tablet,Lenovo,5,Excellent,Not Working,Cracks or major damage,27600.0,3280.31
+Laptop,Lenovo,5,Not Working,Fully Working,Minor scratches,54900.0,6355.52
+Printer,Epson,8,Not Working,Partially Working,None,,500.0
+Television,TCL,8,Not Working,Partially Working,None,46400.0,2169.39
+Laptop,HP,5,Good,Not Working,Minor scratches,112000.0,15344.48
+Desktop computer,Acer,1,Not Working,Not Working,Cracks or major damage,53900.0,2176.54
+Other electronics,Misc,8,Poor,Partially Working,Cracks or major damage,9000.0,585.37
+Laptop,Acer,0,Good,Partially Working,Cracks or major damage,39700.0,14738.58
+Desktop computer,Dell,1,Excellent,Not Working,None,31800.0,9144.7
+Laptop,Lenovo,8,Poor,Not Working,Minor scratches,68300.0,2835.16
+Smartphone,Realme,4,Fair,Partially Working,None,28000.0,7433.08
+Printer,HP,0,Good,Not Working,Minor scratches,11300.0,2971.59
+Accessories,Logitech,2,Good,Fully Working,Minor scratches,3100.0,2207.73
+Desktop computer,Acer,2,Poor,Fully Working,Cracks or major damage,84700.0,18563.62
+Tablet,Samsung,1,Excellent,Partially Working,Minor scratches,28700.0,15963.63
+Laptop,HP,7,Poor,Not Working,Cracks or major damage,103600.0,3571.35
+Monitor,LG,8,Poor,Fully Working,None,26600.0,3845.19
+Desktop computer,HP,5,Good,Fully Working,Cracks or major damage,87700.0,30152.86
+Printer,HP,7,Fair,Fully Working,Minor scratches,29400.0,8083.78
+Laptop,HP,6,Excellent,Partially Working,None,98100.0,31210.91
+Accessories,Generic,0,Fair,Not Working,None,600.0,500.0
+Smartphone,OnePlus,9,Poor,Not Working,None,,1247.46
+Monitor,BenQ,1,Poor,Partially Working,Minor scratches,19000.0,4202.3
+Laptop,Acer,6,Excellent,Not Working,Minor scratches,33100.0,4999.1
+Tablet,Lenovo,1,Fair,Not Working,Minor scratches,12500.0,2152.72
+Other electronics,Misc,5,Poor,Not Working,None,10800.0,702.76
+Television,Panasonic,9,Not Working,Not Working,None,49800.0,1068.87
+Monitor,Acer,7,Fair,Partially Working,Cracks or major damage,29300.0,3634.2
+Television,LG,3,Good,Fully Working,Cracks or major damage,96100.0,40319.28
+Laptop,Dell,6,Fair,Partially Working,Cracks or major damage,55300.0,7632.45
+Monitor,Dell,4,Not Working,Partially Working,None,23000.0,1959.34
+Monitor,LG,9,Not Working,Not Working,Minor scratches,19300.0,500.0
+Desktop computer,Dell,2,Poor,Partially Working,None,108500.0,22826.2
+Tablet,Samsung,9,Fair,Not Working,None,59800.0,3879.55
+Monitor,Samsung,4,Excellent,Partially Working,Minor scratches,14800.0,5755.52
+Other electronics,Misc,0,Poor,Not Working,None,9200.0,1112.96
+Accessories,Belkin,6,Good,Partially Working,None,1100.0,500.0
+Laptop,Lenovo,4,Excellent,Fully Working,Cracks or major damage,66700.0,30533.71
+Accessories,Belkin,3,Excellent,Fully Working,Cracks or major damage,5700.0,2960.66
+Smartphone,OnePlus,4,Excellent,Not Working,Minor scratches,43800.0,8395.34
+Desktop computer,HP,1,Excellent,Fully Working,Cracks or major damage,50400.0,31607.58
+Other electronics,Generic,0,Good,Partially Working,Cracks or major damage,7500.0,2951.61
+Monitor,LG,3,Fair,Fully Working,Cracks or major damage,18400.0,5684.35
+Desktop computer,Acer,8,Not Working,Fully Working,Cracks or major damage,46800.0,2567.88
+Accessories,Generic,1,Good,Partially Working,None,3900.0,1923.69
+Accessories,Generic,5,Not Working,Fully Working,Cracks or major damage,1800.0,500.0
+Desktop computer,Apple,3,Poor,Partially Working,Cracks or major damage,179400.0,21443.31
+Other electronics,Misc,3,Fair,Fully Working,Cracks or major damage,,1683.67
+Desktop computer,Dell,3,Poor,Fully Working,Minor scratches,48700.0,12753.73
+Printer,Brother,7,Good,Not Working,Minor scratches,10200.0,1051.81
+Accessories,Generic,2,Fair,Partially Working,Cracks or major damage,,500.0
+Tablet,Samsung,7,Fair,Fully Working,None,36000.0,10218.6
+Accessories,Logitech,3,Good,Not Working,None,7700.0,1489.13
+Desktop computer,HP,9,Good,Partially Working,None,69300.0,12364.04
+Smartphone,Apple,3,Poor,Partially Working,None,,5214.44
+Accessories,Logitech,6,Fair,Not Working,None,7600.0,721.42
+Television,TCL,9,Poor,Not Working,None,24000.0,940.73
+Other electronics,Misc,6,Fair,Partially Working,Cracks or major damage,9800.0,1313.3
+Smartphone,Apple,2,Not Working,Fully Working,Minor scratches,82700.0,13811.6
+Monitor,Dell,2,Poor,Not Working,Minor scratches,26400.0,2506.32
+Tablet,Samsung,4,Fair,Partially Working,None,26100.0,6938.47
+Monitor,LG,6,Fair,Partially Working,Minor scratches,15900.0,3022.05
+Tablet,Samsung,3,Fair,Fully Working,Cracks or major damage,31600.0,10306.44
+Monitor,Acer,1,Poor,Not Working,None,24600.0,2818.87
+Printer,Canon,4,Excellent,Not Working,Cracks or major damage,14800.0,2048.3
+Monitor,Samsung,6,Excellent,Fully Working,None,26500.0,12959.5
+Desktop computer,Apple,5,Fair,Fully Working,Minor scratches,181400.0,67018.11
+Printer,Epson,2,Good,Not Working,Minor scratches,19800.0,4039.62
+Desktop computer,HP,5,Not Working,Fully Working,Minor scratches,93900.0,10277.74
+Accessories,Logitech,8,Poor,Partially Working,Cracks or major damage,3500.0,500.0
+Television,LG,6,Excellent,Not Working,Minor scratches,32300.0,4686.02
+Accessories,Generic,9,Not Working,Fully Working,Minor scratches,1600.0,500.0
+Other electronics,Misc,5,Not Working,Not Working,None,8100.0,500.0
+Laptop,Lenovo,4,Poor,Fully Working,None,36600.0,8975.28
+Accessories,Generic,0,Not Working,Not Working,None,3400.0,500.0
+Television,Samsung,2,Poor,Fully Working,Minor scratches,115100.0,34945.03
+Television,LG,3,Good,Fully Working,Minor scratches,69200.0,39699.68
+Desktop computer,HP,2,Not Working,Fully Working,Minor scratches,,5018.13
+Television,Samsung,0,Good,Partially Working,Cracks or major damage,36400.0,13756.6
+Smartphone,Samsung,9,Good,Fully Working,Cracks or major damage,83000.0,15874.7
+Laptop,Asus,0,Not Working,Fully Working,None,92000.0,19556.0
+Laptop,Lenovo,9,Not Working,Not Working,Cracks or major damage,33500.0,500.0
+Accessories,Logitech,8,Not Working,Fully Working,Cracks or major damage,5300.0,500.0
+Accessories,Logitech,3,Fair,Fully Working,Cracks or major damage,,571.33
+Television,Panasonic,5,Good,Not Working,Minor scratches,37200.0,5033.82
+Accessories,Belkin,5,Good,Fully Working,Minor scratches,2900.0,1384.08
+Laptop,Apple,0,Poor,Fully Working,Cracks or major damage,218200.0,62730.46
+Accessories,Logitech,4,Good,Not Working,Minor scratches,8200.0,1269.95
+Smartphone,Xiaomi,6,Fair,Partially Working,Minor scratches,,5922.47
+Monitor,Acer,9,Not Working,Fully Working,Minor scratches,12700.0,871.25
+Television,Sony,0,Poor,Not Working,None,180400.0,23432.54
+Desktop computer,Dell,6,Poor,Partially Working,Cracks or major damage,105300.0,8829.07
+Monitor,BenQ,4,Good,Not Working,Minor scratches,20300.0,3191.83
+Other electronics,Generic,7,Not Working,Partially Working,Minor scratches,6700.0,500.0
+Television,Samsung,3,Not Working,Not Working,None,122300.0,5605.75
+Laptop,HP,2,Good,Fully Working,None,41200.0,28744.12
+Monitor,LG,6,Not Working,Fully Working,Cracks or major damage,15900.0,1087.66
+Television,Panasonic,6,Poor,Fully Working,None,54400.0,10290.23
+Television,Panasonic,3,Good,Not Working,Cracks or major damage,68500.0,9030.53
+Monitor,LG,2,Fair,Fully Working,Minor scratches,37100.0,19633.71
+Accessories,Belkin,0,Excellent,Not Working,Cracks or major damage,3800.0,847.96
+Accessories,Anker,8,Not Working,Not Working,Cracks or major damage,4300.0,500.0
+Accessories,Generic,9,Poor,Not Working,None,,500.0
+Tablet,Microsoft,8,Poor,Fully Working,Cracks or major damage,70000.0,7526.14
+Other electronics,Generic,2,Good,Partially Working,Minor scratches,7900.0,3309.24
+Laptop,Apple,0,Good,Not Working,None,215700.0,61326.48
+Laptop,Dell,7,Poor,Partially Working,Minor scratches,69900.0,7363.8
+Television,Samsung,6,Excellent,Not Working,None,97700.0,14645.62
+Printer,Epson,1,Not Working,Not Working,Minor scratches,7400.0,500.0
+Smartphone,Apple,6,Not Working,Partially Working,None,101000.0,6401.44
+Tablet,Apple,0,Not Working,Fully Working,Minor scratches,62500.0,12548.58
+Tablet,Samsung,4,Excellent,Fully Working,Cracks or major damage,24200.0,11269.06
+Smartphone,Google,4,Not Working,Not Working,None,49100.0,1878.46
+Printer,Brother,8,Excellent,Partially Working,None,,1801.26
+Desktop computer,Apple,4,Not Working,Fully Working,Cracks or major damage,173200.0,15469.3
+Other electronics,Misc,3,Poor,Partially Working,Minor scratches,11700.0,2028.91
+Other electronics,Misc,9,Fair,Not Working,None,7900.0,532.25
+Laptop,HP,7,Good,Partially Working,Minor scratches,85600.0,19811.44
+Tablet,Apple,4,Excellent,Fully Working,None,64600.0,44177.02
+Laptop,Asus,2,Poor,Partially Working,None,36000.0,7216.79
+Accessories,Generic,1,Not Working,Fully Working,Cracks or major damage,,500.0
+Smartphone,OnePlus,3,Excellent,Partially Working,Cracks or major damage,57100.0,17169.14
+Printer,HP,6,Good,Fully Working,None,28900.0,12119.16
+Desktop computer,HP,0,Poor,Not Working,Cracks or major damage,33600.0,2924.35
+Laptop,Asus,0,Poor,Fully Working,Cracks or major damage,40700.0,11638.14
+Desktop computer,Acer,8,Poor,Fully Working,Cracks or major damage,,2980.78
+Printer,HP,7,Not Working,Not Working,Minor scratches,6800.0,500.0
+Monitor,Samsung,5,Excellent,Not Working,Minor scratches,34700.0,5775.7
+Smartphone,Xiaomi,3,Poor,Partially Working,Minor scratches,12100.0,2011.92
+Smartphone,Samsung,4,Good,Partially Working,Cracks or major damage,,7015.26
+Tablet,Samsung,5,Excellent,Fully Working,Cracks or major damage,52100.0,21542.54
+Smartphone,Realme,2,Excellent,Not Working,Cracks or major damage,27600.0,4772.2
+Smartphone,Samsung,8,Not Working,Fully Working,Cracks or major damage,,1640.79
+Tablet,Microsoft,2,Excellent,Partially Working,Minor scratches,35600.0,17892.32
+Laptop,Apple,6,Fair,Fully Working,None,207300.0,68960.91
+Television,LG,8,Good,Not Working,None,71800.0,7100.42
+Smartphone,Realme,8,Poor,Partially Working,Cracks or major damage,13800.0,860.26
+Accessories,Anker,5,Poor,Fully Working,None,2100.0,500.0
+Tablet,Apple,8,Poor,Not Working,None,,1124.82
+Laptop,HP,5,Good,Fully Working,Minor scratches,80200.0,38434.75
+Television,Sony,9,Good,Not Working,Cracks or major damage,231200.0,13277.7
+Laptop,Dell,6,Poor,Fully Working,None,69400.0,13541.57
+Laptop,Asus,8,Excellent,Not Working,None,105600.0,12319.87
+Desktop computer,Acer,4,Good,Fully Working,Minor scratches,41300.0,21318.74
+Desktop computer,Apple,4,Good,Partially Working,None,184300.0,65977.32
+Television,Sony,9,Poor,Not Working,None,192200.0,7656.45
+Desktop computer,Acer,1,Fair,Fully Working,None,,18524.48
+Printer,Epson,5,Poor,Fully Working,Minor scratches,15300.0,3296.27
+Other electronics,Generic,8,Poor,Not Working,Minor scratches,4800.0,500.0
+Smartphone,OnePlus,8,Fair,Partially Working,Cracks or major damage,,3261.19
+Other electronics,Misc,8,Not Working,Fully Working,Minor scratches,4500.0,500.0
+Desktop computer,Dell,3,Fair,Not Working,Minor scratches,74300.0,9914.71
+Accessories,Anker,8,Poor,Fully Working,Cracks or major damage,1200.0,500.0
+Tablet,Lenovo,6,Excellent,Fully Working,Cracks or major damage,,8660.18
+Desktop computer,Acer,2,Not Working,Not Working,Minor scratches,54900.0,2738.71
+Monitor,Samsung,9,Excellent,Not Working,Minor scratches,,1199.11
+Smartphone,Realme,0,Fair,Partially Working,None,,13605.88
+Laptop,Apple,5,Excellent,Fully Working,None,94400.0,52194.4
+Monitor,BenQ,0,Fair,Fully Working,None,35200.0,24968.68
+Monitor,BenQ,5,Excellent,Fully Working,Minor scratches,31700.0,18298.84
+Accessories,Belkin,8,Not Working,Not Working,None,5200.0,500.0
+Printer,HP,4,Fair,Not Working,Minor scratches,,831.14
+Printer,HP,9,Good,Partially Working,Minor scratches,10000.0,1655.04
+Monitor,Acer,0,Poor,Fully Working,Cracks or major damage,15600.0,4508.25
+Other electronics,Misc,7,Fair,Not Working,Minor scratches,8500.0,706.62
+Television,Sony,7,Not Working,Fully Working,None,132800.0,12105.11
+Tablet,Samsung,2,Not Working,Partially Working,Minor scratches,24200.0,2483.05
+Tablet,Lenovo,3,Poor,Not Working,Minor scratches,21300.0,1744.05
+Printer,Canon,4,Fair,Partially Working,Minor scratches,33700.0,8611.71
