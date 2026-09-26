@@ -8,4 +8,4 @@ class HealthResponse(BaseModel):
 
     status: str
     service: str
-    stage: str
+    version: str

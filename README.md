@@ -955,6 +955,8 @@ is enforced by the backend, not by the UI.
 | [`docs/VIVA_VALUATION_ML.md`](docs/VIVA_VALUATION_ML.md) | Viva-ready ML explanation with likely examiner questions |
 | [`docs/STAGE_3J.md`](docs/STAGE_3J.md) | The QA/security audit: findings, fixes, test coverage, verification results |
 | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | What deployment would require, and what is not ready |
+| [`docs/STAGE_4E_PLAN.md`](docs/STAGE_4E_PLAN.md) | Cloud deployment plan: hosting, database persistence, environment variables, URLs, HTTPS, custom domain |
+| `docs/STAGE_4D.md` | Git hygiene, security audit and regression verification |
 | [`backend/data/README.md`](backend/data/README.md) | Measured dataset audit, leakage review, and the documented public-dataset search |
 | `docs/STAGE_3A.md` … `STAGE_3I.md` | Per-stage implementation notes and decisions |
 
@@ -1052,7 +1054,12 @@ Roughly in order of value:
 
 This section describes what a deployment *would* involve. A longer version, with
 the rationale behind each choice, is in
-[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
+[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md), and the concrete hosting, database
+and environment decisions still to be made are laid out in
+[`docs/STAGE_4E_PLAN.md`](docs/STAGE_4E_PLAN.md).
+
+The repository is initialised, clean and ready to publish. Creating the GitHub
+repository, adding a remote and pushing are deliberately left to you.
 
 ### Architecture recap
 
