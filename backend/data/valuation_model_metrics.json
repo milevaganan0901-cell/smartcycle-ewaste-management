@@ -2,7 +2,7 @@
   "model_name": "GradientBoostingRegressor",
   "model_type": "GradientBoostingRegressor (predicts a depreciation ratio)",
   "pipeline": "ColumnTransformer(SimpleImputer + OneHotEncoder(handle_unknown='ignore') + SimpleImputer(median)) -> GradientBoostingRegressor(n_estimators=500, max_depth=4, learning_rate=0.05)",
-  "trained_at": "2026-09-26T09:57:35.582105+00:00",
+  "trained_at": "2026-09-26T10:40:43.043181+00:00",
   "dataset_identifier": "valuation_demo_dataset.csv",
   "dataset_kind": "synthetic_development",
   "target": "estimated_purchase_value",
