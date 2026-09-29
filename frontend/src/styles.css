@@ -4810,3 +4810,295 @@ textarea:focus-visible {
     min-height: auto;
   }
 }
+
+/* ==========================================================================
+   SmartCycle AI assistant
+   --------------------------------------------------------------------------
+   A self-contained floating widget layered over every page. It is appended
+   here rather than mixed into an existing block so nothing above this line
+   changes. Every colour, radius, shadow and font size is an existing token,
+   so the widget cannot drift from the rest of the design system.
+
+   The launcher sits above the sticky header (z-index 50) and the skip link
+   (100); 200 keeps it clear of both. It is the only bottom-right fixed
+   element on the site, so it overlaps nothing.
+   ========================================================================== */
+
+.chat-widget {
+  position: fixed;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.chat-launcher {
+  display: inline-flex;
+  width: 58px;
+  height: 58px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  color: #fff;
+  background: var(--green);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.chat-launcher:hover {
+  transform: translateY(-2px);
+  background: var(--green-dark);
+  box-shadow: var(--shadow-lg);
+}
+
+.chat-panel {
+  display: flex;
+  width: min(370px, calc(100vw - 2 * var(--space-5)));
+  max-height: min(560px, calc(100vh - 2 * var(--space-5)));
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  color: #fff;
+  background: var(--green-deep);
+}
+
+.chat-header-title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.chat-header-title > span:last-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chat-header-title strong {
+  font-size: var(--text-base);
+  line-height: 1.2;
+}
+
+.chat-header-title small {
+  color: var(--green-light);
+  font-size: var(--text-xs);
+  line-height: 1.3;
+}
+
+.chat-header-icon {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.chat-close {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  background: transparent;
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+
+.chat-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.chat-transcript {
+  display: flex;
+  flex: 1;
+  min-height: 220px;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow-y: auto;
+  padding: var(--space-4);
+  background: var(--surface-soft);
+}
+
+.chat-bubble {
+  max-width: 86%;
+  margin: 0;
+  padding: 10px 13px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  /* Assistant answers are plain text from a model, so long unbroken tokens
+     (URLs, tracking IDs) must break rather than widen the panel. */
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.chat-bubble-assistant {
+  align-self: flex-start;
+  border: 1px solid var(--line);
+  border-bottom-left-radius: var(--radius-sm);
+  color: var(--ink);
+  background: var(--surface);
+}
+
+.chat-bubble-user {
+  align-self: flex-end;
+  border-bottom-right-radius: var(--radius-sm);
+  color: #fff;
+  background: var(--green);
+}
+
+.chat-typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+.chat-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--green);
+  animation: chat-typing-bounce 1.1s ease-in-out infinite;
+}
+
+.chat-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.chat-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.chat-typing em {
+  margin-left: 4px;
+  font-style: normal;
+}
+
+@keyframes chat-typing-bounce {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  35% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* Respect the same reduced-motion contract the rest of the site uses. */
+@media (prefers-reduced-motion: reduce) {
+  .chat-typing span {
+    animation: none;
+  }
+}
+
+.chat-error {
+  margin: 0;
+  padding: 10px 13px;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-md);
+  color: var(--danger);
+  background: var(--danger-soft);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
+.chat-composer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.chat-composer input {
+  min-width: 0;
+  flex: 1;
+  min-height: 42px;
+  padding: 0 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  background: var(--surface);
+  font: inherit;
+  font-size: var(--text-sm);
+}
+
+.chat-composer input::placeholder {
+  color: var(--muted-light);
+}
+
+.chat-send {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  color: #fff;
+  background: var(--green);
+  cursor: pointer;
+  transition: background 160ms ease, opacity 160ms ease;
+}
+
+.chat-send:hover:not(:disabled) {
+  background: var(--green-dark);
+}
+
+.chat-send:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+@media (max-width: 640px) {
+  .chat-widget {
+    right: var(--space-4);
+    bottom: var(--space-4);
+  }
+
+  /* On a phone the panel takes the width it can and stops short of the screen
+     edges, so it never covers the whole viewport or the page behind it. */
+  .chat-panel {
+    width: calc(100vw - 2 * var(--space-4));
+    max-height: min(70vh, calc(100vh - 2 * var(--space-4)));
+  }
+
+  .chat-launcher {
+    width: 52px;
+    height: 52px;
+  }
+}

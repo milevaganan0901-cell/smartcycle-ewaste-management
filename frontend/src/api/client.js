@@ -663,3 +663,64 @@ export async function getAdminValuationModel(token, { signal } = {}) {
 
   return body
 }
+
+function isChatResponse(body) {
+  if (!body || typeof body !== 'object') return false
+
+  return typeof body.response === 'string' && body.response.trim().length > 0
+}
+
+function readChatErrorMessage(status, body) {
+  // 503 means the assistant has no API key configured on the server. That is an
+  // operator problem rather than something the visitor can fix, so it is
+  // reported in the same plain, non-technical terms as every other failure.
+  if (status === 422) return 'Please type a message before sending.'
+  if (status === 503) {
+    return typeof body?.detail === 'string'
+      ? body.detail
+      : 'The assistant is not available right now.'
+  }
+  return 'Something went wrong, please try again.'
+}
+
+// The SmartCycle AI assistant is public, so no token is sent. The Gemini key
+// lives only on the backend and is never exposed to the browser.
+export async function sendChatMessage(message, { signal } = {}) {
+  let response
+
+  try {
+    response = await fetch(`${apiBaseUrl}/api/chat`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
+      signal,
+    })
+  } catch (error) {
+    if (error.name === 'AbortError') throw error
+    throw new ApiError(
+      'Unable to reach the server. Please make sure the backend is running.',
+      { isNetworkError: true },
+    )
+  }
+
+  const body = await readResponseBody(response)
+  if (!response.ok) {
+    throw new ApiError(readChatErrorMessage(response.status, body), {
+      status: response.status,
+      body,
+    })
+  }
+
+  if (!isChatResponse(body)) {
+    throw new ApiError('The assistant returned an unexpected response.', {
+      status: 502,
+      body,
+      isMalformedResponse: true,
+    })
+  }
+
+  return body
+}

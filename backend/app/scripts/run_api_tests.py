@@ -349,6 +349,155 @@ def run_valuation_unit_checks(print_summary: bool = True) -> int:
     return 0
 
 
+def run_chat_unit_checks(print_summary: bool = True) -> int:
+    """In-process checks for the SmartCycle AI assistant.
+
+    The Gemini provider is stubbed throughout, so nothing here makes a network
+    call and no API key is needed. Covered: request validation, the router's
+    not-configured path, pass-through of a successful answer, and the guarantee
+    that any provider failure can only ever produce the one fixed safe message.
+    """
+    section("AI assistant - request validation (no provider call)")
+    from pydantic import ValidationError
+    from app.schemas.chat import MAX_MESSAGE_LENGTH, ChatRequest
+
+    question = "How does SmartCycle value a device?"
+    check("a normal question is accepted", ChatRequest(message=question).message == question)
+
+    rejected = (
+        ("an empty message", ""),
+        ("a whitespace-only message", "   \t  \n "),
+        (f"a message over {MAX_MESSAGE_LENGTH} characters", "x" * (MAX_MESSAGE_LENGTH + 1)),
+    )
+    for label, bad in rejected:
+        try:
+            ChatRequest(message=bad)
+            check(f"{label} is rejected", False, "it was accepted")
+        except ValidationError:
+            check(f"{label} is rejected", True)
+
+    try:
+        ChatRequest(message="hi", unexpected="field")
+        check("an unexpected field is rejected", False, "it was accepted")
+    except ValidationError:
+        check("an unexpected field is rejected", True)
+
+    at_limit = "y" * MAX_MESSAGE_LENGTH
+    check(f"a message of exactly {MAX_MESSAGE_LENGTH} characters is accepted",
+          len(ChatRequest(message=at_limit).message) == MAX_MESSAGE_LENGTH)
+
+    section("AI assistant - provider stubbed (no key, no network)")
+    from fastapi import HTTPException
+    from app.api.routers.chat import chat as chat_route
+    from app.services import gemini_service
+
+    class StubInteraction:
+        def __init__(self, text: str) -> None:
+            self.output_text = text
+
+    class StubInteractions:
+        def __init__(self, text=None, error=None) -> None:
+            self.text, self.error, self.seen = text, error, {}
+
+        def create(self, **kwargs):
+            self.seen = kwargs
+            if self.error is not None:
+                raise self.error
+            return StubInteraction(self.text)
+
+    class StubClient:
+        def __init__(self, text=None, error=None) -> None:
+            self.interactions = StubInteractions(text=text, error=error)
+
+    def with_stub(client, key, action):
+        """Run `action` against a stubbed provider and a chosen key state."""
+        saved = (gemini_service._get_client, gemini_service.GEMINI_API_KEY,
+                 gemini_service.is_configured)
+        gemini_service._get_client = lambda: client
+        gemini_service.GEMINI_API_KEY = key
+        gemini_service.is_configured = lambda: bool(key)
+        try:
+            return action()
+        finally:
+            (gemini_service._get_client, gemini_service.GEMINI_API_KEY,
+             gemini_service.is_configured) = saved
+
+    # A successful answer is passed through untouched, and the grounding that
+    # keeps the assistant honest is actually sent to the provider.
+    answer = "SmartCycle estimates a device's value from its age, condition and working status."
+    stub = StubClient(text=answer)
+    replied = with_stub(stub, "stub-key", lambda: chat_route(ChatRequest(message=question)))
+    check("a valid question returns the assistant's answer", replied.response == answer, replied.response[:40])
+    check("the user's question reaches the provider", stub.interactions.seen.get("input") == question)
+    check("the configured model is the one requested",
+          stub.interactions.seen.get("model") == gemini_service.GEMINI_MODEL,
+          str(stub.interactions.seen.get("model")))
+    sent_instruction = stub.interactions.seen.get("system_instruction") or ""
+    check("the SmartCycle system instruction is sent", "SmartCycle AI Assistant" in sent_instruction)
+    check("the system instruction carries the contact details",
+          "milevaganan0901@gmail.com" in sent_instruction and "+91 86376 12496" in sent_instruction)
+    check("the system instruction forbids invented prices and pickup promises",
+          "Never invent prices" in sent_instruction and "pickup time" in sent_instruction)
+
+    # A missing key is an operator problem, so the router answers 503.
+    try:
+        with_stub(None, "", lambda: chat_route(ChatRequest(message="hi")))
+        check("a missing API key is reported as unavailable", False, "no error was raised")
+    except HTTPException as error:
+        check("a missing API key is reported as unavailable", error.status_code == 503,
+              f"got {error.status_code}")
+
+    # The failures below are deliberate. The service logs each one server-side,
+    # which is the behaviour we want, but the tracebacks would bury the results.
+    logging.disable(logging.CRITICAL)
+    try:
+        for label, error in (
+            ("a rate limit", RuntimeError("429 RESOURCE_EXHAUSTED: quota exceeded")),
+            ("an unavailable API", RuntimeError("503 Service Unavailable")),
+            ("a network failure", OSError("connection reset by peer")),
+            ("a timeout", TimeoutError("the read operation timed out")),
+        ):
+            got = with_stub(StubClient(error=error), "stub-key",
+                            lambda: chat_route(ChatRequest(message="hi")))
+            check(f"{label} -> the safe fallback message",
+                  got.response == gemini_service.UNAVAILABLE_MESSAGE)
+
+        for label, blank in (("an empty answer", ""), ("a whitespace-only answer", "  \n ")):
+            got = with_stub(StubClient(text=blank), "stub-key",
+                            lambda: chat_route(ChatRequest(message="hi")))
+            check(f"{label} -> the safe fallback message",
+                  got.response == gemini_service.UNAVAILABLE_MESSAGE)
+
+        section("AI assistant - no key or internals reach the caller")
+        secret = "AIzaSyTESTKEY0000doNotLeak0000000000"
+        probes = (
+            ("a provider exception",
+             with_stub(StubClient(error=RuntimeError(f"rejected key {secret} on db postgresql://u:p@h/db")),
+                       "stub-key", lambda: gemini_service.generate_reply("hi"))),
+            ("the not-configured message",
+             with_stub(None, "", lambda: gemini_service.NOT_CONFIGURED_MESSAGE)),
+            ("the safe fallback",
+             with_stub(StubClient(error=RuntimeError("boom")), "stub-key",
+                       lambda: gemini_service.generate_reply("hi"))),
+            ("a successful answer",
+             with_stub(StubClient(text="A normal helpful answer."), "stub-key",
+                       lambda: gemini_service.generate_reply("hi"))),
+        )
+        forbidden = (secret, "GEMINI_API_KEY", "GEMINI_MODEL", "Traceback", 'File "',
+                     "/Users/", "postgresql://", "JWT_SECRET", "neon.tech", "google.genai",
+                     "sys.argv", "sqlite")
+        for label, text in probes:
+            leaked = [token for token in forbidden if token in text]
+            check(f"{label} exposes no key, env var, traceback, or database detail",
+                  not leaked, ", ".join(leaked))
+    finally:
+        logging.disable(logging.NOTSET)
+
+    if print_summary:
+        return _summarize()
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(prog="python -m app.scripts.run_api_tests")
     parser.add_argument("--base-url", default=os.getenv("API_BASE_URL", "http://127.0.0.1:8000"))
@@ -367,7 +516,9 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.unit_only:
-        return run_valuation_unit_checks()
+        run_valuation_unit_checks(print_summary=False)
+        run_chat_unit_checks(print_summary=False)
+        return _summarize()
 
     client = Client(args.base_url)
 
@@ -696,6 +847,7 @@ def main() -> int:
     # ------------------------------------------------- valuation unit tests
     if args.unit:
         run_valuation_unit_checks(print_summary=False)
+        run_chat_unit_checks(print_summary=False)
 
     # -------------------------------------------------------------- summary
     section("Summary")

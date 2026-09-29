@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routers import admin, auth, devices, health, pickup, users
+from app.api.routers import admin, auth, chat, devices, health, pickup, users
 from app.core.config import (
     CORS_ALLOW_CREDENTIALS,
     CORS_ALLOW_HEADERS,
@@ -78,6 +78,7 @@ app.include_router(auth.router, prefix="/api")
 app.include_router(users.router, prefix="/api")
 app.include_router(pickup.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
+app.include_router(chat.router, prefix="/api")
 
 
 @app.get("/", tags=["system"], summary="Service identification")

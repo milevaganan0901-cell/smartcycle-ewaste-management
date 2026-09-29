@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 
+import ChatWidget from './ChatWidget.jsx'
 import SiteFooter from './SiteFooter.jsx'
 import SiteHeader from './SiteHeader.jsx'
 
@@ -19,6 +20,7 @@ export default function AppLayout() {
         <Outlet />
       </main>
       <SiteFooter />
+      <ChatWidget />
     </div>
   )
 }

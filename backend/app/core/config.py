@@ -200,3 +200,20 @@ VALUATION_DATASET_PATH = _resolve_path(
 # Never train on request or at startup. The model is produced by the manual
 # script `python -m app.scripts.train_valuation_model`.
 TRAIN_MODEL_ON_STARTUP = False
+
+# --- Gemini AI assistant ------------------------------------------------------
+# Both settings are optional. The API starts normally and every existing
+# endpoint keeps working when they are absent; only POST /api/chat reports a
+# safe configuration error until a key is supplied.
+#
+# GEMINI_API_KEY is a server-side secret. It must never be returned by an
+# endpoint, sent to the browser, or committed. An empty or whitespace-only
+# value is normalized to None so a blank Render variable is treated as
+# "not configured" rather than as a real key.
+GEMINI_API_KEY = (os.getenv("GEMINI_API_KEY") or "").strip() or None
+
+# The model is configurable so a future rename does not require a code change.
+# The default is a current stable Gemini 3 Flash endpoint (verified against the
+# published model list): the 2.5 family is access-restricted for new projects
+# and the 2.0 models are shut down, so neither is a safe default.
+GEMINI_MODEL = (os.getenv("GEMINI_MODEL") or "").strip() or "gemini-3.8-flash"

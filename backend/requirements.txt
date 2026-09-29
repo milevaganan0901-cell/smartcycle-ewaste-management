@@ -14,3 +14,12 @@ python-dotenv
 # hosted providers hand out, so this is the driver that makes a pasted
 # connection string work with no editing.
 psycopg[binary]
+
+# Official Google Gen AI SDK, used only by the SmartCycle AI assistant. This is
+# the current package and the import path is `from google import genai`; the
+# older `google-generativeai` package is deprecated and is deliberately not
+# used.
+#
+# It is imported lazily inside the service, so the API starts normally even if
+# the SDK is missing and the assistant simply reports that it is unavailable.
+google-genai
