@@ -7,6 +7,12 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.models.device import ALLOWED_DEVICE_STATUSES
 
+# Upper bound for a plausible device age, enforced as an invalid-input rejection.
+# Deliberately well above any trained range: this is a sanity check on the request,
+# not the ML out-of-distribution guard, which reads the real trained bounds from
+# the model artifact.
+MAX_DEVICE_AGE = 40
+
 
 DeviceStatus = Literal[
     "Submitted",
@@ -28,7 +34,22 @@ class DeviceCreate(BaseModel):
     device_category: str = Field(min_length=1, max_length=100)
     brand: str = Field(min_length=1, max_length=100)
     model: str = Field(min_length=1, max_length=120)
-    age: int = Field(ge=0)
+    # Three-tier age policy.
+    #
+    # `ge=0` / `le=MAX_DEVICE_AGE` are the INVALID-INPUT tier and are enforced
+    # here, so an impossible age is rejected with 422 and can never reach the
+    # valuation code as a silent fallback.
+    #
+    # Ages inside this span are *valid*, but that does not mean the model can
+    # price them: the ML path additionally requires the age to fall inside the
+    # training distribution recorded in the model artifact (plus its tolerance).
+    # Everything else is handled by the rule-based fallback, which reports
+    # `valuation_method: "rule_based"`. No response field is added for this.
+    #
+    # The cap of 40 years is a sanity bound, not a modelling limit. A device older
+    # than that is not a resale candidate at all; it is scrap. Rejecting it is more
+    # honest than quoting a value for it.
+    age: int = Field(ge=0, le=MAX_DEVICE_AGE)
     condition: str = Field(min_length=1, max_length=50)
     working_status: str = Field(min_length=1, max_length=50)
     physical_damage: str | None = Field(default="None", max_length=255)

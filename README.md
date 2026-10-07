@@ -245,7 +245,7 @@ smart-ewaste-management/
 │   │   └── main.py                      app factory, CORS, router registration
 │   ├── data/
 │   │   ├── README.md                    dataset provenance and honesty notes
-│   │   ├── valuation_demo_dataset.csv   420 SYNTHETIC rows (committed)
+│   │   ├── valuation_demo_dataset.csv   900 SYNTHETIC rows (committed)
 │   │   ├── valuation_model.joblib       trained pipeline (NOT committed — regenerate)
 │   │   └── valuation_model_metrics.json evaluation metrics (committed)
 │   ├── requirements.txt
@@ -386,10 +386,33 @@ refurbished = max(500, value x 1.25 or 1.05) # 1.25 only if usable and not poor
 recycled    = max(500, value x 0.08)
 ```
 
+### Which model is this? (read this first)
+
+Two model generations exist in this repository, and they are **not** comparable.
+Confusing them is the single easiest way to misread this README.
+
+| | **ML Valuation v2** | **Previous shipped model** |
+| --- | --- | --- |
+| Status | **Local only — NOT deployed to production** | **Currently running in production** |
+| Estimator | `RandomForestRegressor(n_estimators=300, max_depth=12, min_samples_leaf=2, random_state=42)` | `GradientBoostingRegressor(n_estimators=500, max_depth=4, learning_rate=0.05)` |
+| Training data | 900-row synthetic dataset, generated **independently** of the rule-based formula | 420-row synthetic dataset, generated **from** the rule-based formula |
+| Holdout MAE | **Rs 1,656.43** | Rs 822.12 |
+| Where documented | [ML Valuation v2 — local synthetic-development benchmark](#ml-valuation-v2--local-synthetic-development-benchmark) | [Previous shipped model / historical baseline](#previous-shipped-model--historical-baseline) |
+
+**Neither MAE is a production metric, and neither is comparable to the other.**
+They were trained on different data, different targets and different algorithms.
+The v2 MAE is *higher* not because the model got worse but because it was stopped
+from being handed the answer: the v1 dataset's target was computed from the very
+rule-based formula the model is compared against, so a low error there mostly
+measures formula reproduction. The v2 dataset was generated independently, so its
+error measures how well the model fits a generator whose assumptions are
+synthetic. **Neither figure is real-market validation of any kind.**
+
 ### The ML pipeline
 
-- `GradientBoostingRegressor` (Stage 4B; previously `RandomForestRegressor`)
-  inside a `ColumnTransformer` with `SimpleImputer` +
+Applies to both generations; the estimator differs as tabulated above.
+
+- A scikit-learn ensemble inside a `ColumnTransformer` with `SimpleImputer` +
   `OneHotEncoder(handle_unknown="ignore")`.
 - Predicts a **depreciation ratio**; the ratio is multiplied by the same
   reference value the rules use.
@@ -400,33 +423,50 @@ recycled    = max(500, value x 0.08)
 - The saved artifact also records the **training distribution**, so a submission
   outside it is handed to the rules rather than given a flat, wrong ML number.
 
-### Honest reporting of the metrics
+### Previous shipped model / historical baseline
 
-| Metric | Value |
-| --- | --- |
-| MAE | Rs 822.12 |
-| RMSE | Rs 1,488.16 |
-| R2 | 0.9916 |
+The figures in this subsection describe the **previously shipped** model, which
+is what production runs today. They are retained for historical comparison only.
+For the current local work see
+[ML Valuation v2](#ml-valuation-v2--local-synthetic-development-benchmark).
 
-**These numbers mean very little, and the project says so everywhere.** The
-training data is 420 rows generated from the project's *own* rule-based formula
-plus +/-7% noise (audited in
-[`backend/data/README.md`](backend/data/README.md)). A high R2 on data
-generated from a known formula only demonstrates that the function is
-learnable. It is **not** evidence of real-world accuracy, and it is not
-presented as such in the UI, the API, the admin panel or the docs.
+- Estimator: `GradientBoostingRegressor(n_estimators=500, max_depth=4,
+  learning_rate=0.05)`
+- Training data: the previous **420-row** synthetic dataset, whose target was
+  generated from the project's **own rule-based formula** plus +/-7% noise
+  (audited in [`backend/data/README.md`](backend/data/README.md))
+- 5-fold CV selection: LinearRegression 2,317.89 · Ridge 2,279.38 ·
+  RandomForestRegressor 1,321.33 · **GradientBoosting 774.14**
+- Holdout (84 rows):
 
-**The rule-based estimator still scores better on this dataset** (MAE Rs 287.31
-versus Rs 822.12). That result is measured, displayed in the admin panel, and
-explained rather than hidden.
+| Predictor | MAE | RMSE | R2 |
+| --- | --- | --- | --- |
+| **ML model (GradientBoosting)** | **Rs 822.12** | Rs 1,488.16 | **0.9916** |
+| Baseline: mean-value predictor | Rs 10,582.17 | Rs 16,363.65 | -0.0190 |
+| Baseline: **rule-based estimator** | **Rs 287.31** | Rs 585.10 | **0.9987** |
+
+**These numbers mean very little, and the project says so everywhere.** A high
+R2 on data whose target was generated from a known formula only demonstrates
+that the function is learnable. It is **not** evidence of real-world accuracy,
+and it is not presented as such in the UI, the API, the admin panel or the docs.
+
+**The rule-based estimator scored better than the model on that dataset** (MAE
+Rs 287.31 versus Rs 822.12) because the rules were effectively ground truth on
+data derived from themselves. That result was measured, displayed in the admin
+panel, and explained rather than hidden — and it is the specific reason ML v2
+replaced the dataset rather than the estimator.
+
+> **These numbers are historical.** They are **not** production metrics for the
+> current code, and they are **not** comparable to the v2 figures, which come
+> from different data, a different target and a different algorithm.
 
 ### The training data is synthetic
 
 | Property | Value |
 | --- | --- |
-| Rows | 420 |
-| Generator | `random.Random(20260926)` - regenerable byte-for-byte |
-| Source | Generated from the rule-based formula. **Not** scraped, **not** collected from users. |
+| Rows | 900 |
+| Generator | `backend/app/scripts/generate_valuation_dataset.py`, fixed seed `20261007` - regenerable byte-for-byte |
+| Source | Generated independently by that committed generator. **Not** scraped, **not** collected from users, and **not** derived from the rule-based valuation formula. |
 | Real market data | None |
 | Public dataset used instead | No - searched for, downloaded, licence-verified, and rejected on documented grounds |
 
@@ -496,16 +536,23 @@ consistent whichever path produced the base number.
 | Collected from real users? | **No** |
 | Scraped from a marketplace? | **No** |
 | Licence | N/A - original work for this project |
-| Records | **420** |
-| Missing values | `original_purchase_price` only, 63 rows (15.0%) |
+| Records | **900** |
+| Missing values | `original_purchase_price` only, 189 rows (21.0%) |
 | Duplicates | **0** |
 | Impossible values | **0** (no negative age, no non-positive price, no negative target) |
-| Regenerable | Yes, byte-for-byte, from `random.Random(20260926)` |
+| Regenerable | Yes, byte-for-byte, via `python -m app.scripts.generate_valuation_dataset` (seed `20261007`) |
 
-**The single most important fact:** the target was *generated from the
-rule-based formula*. That makes the rule-based estimator close to ground truth
-on this data, which is exactly why the baseline comparison below looks the way
-it does.
+**How to read these metrics.** The dataset is synthetic, so every figure
+below measures how closely the model fits the committed generator's assumptions.
+It is **not** real-world accuracy.
+
+This was deliberately changed in ML-v2. The previous 420-row dataset was
+generated *from* the rule-based formula, which made that formula close to
+ground truth and the model 2.9x worse than the fallback it was imitating. The
+current 900-row dataset is produced by
+`backend/app/scripts/generate_valuation_dataset.py` (seed `20261007`), which
+does **not** import or reuse `app/services/valuation.py`. The model now has to
+learn the relationship rather than reproduce a formula it was handed.
 
 Measured data-quality audit, including the leak review and the full public
 dataset search, is in [`backend/data/README.md`](backend/data/README.md).
@@ -543,6 +590,10 @@ training and serving:
 Four candidates, compared on **5-fold cross-validated MAE** - deliberately not
 on the holdout, so the holdout remains an unbiased final estimate.
 
+The **previous shipped model** selected
+`GradientBoostingRegressor(n_estimators=500, max_depth=4, learning_rate=0.05)`
+from these cross-validated figures:
+
 | Model | CV MAE | CV R2 |
 | --- | --- | --- |
 | LinearRegression | 2,317.89 | 0.9177 |
@@ -550,14 +601,15 @@ on the holdout, so the holdout remains an unbiased final estimate.
 | RandomForestRegressor | 1,321.33 | 0.9516 |
 | **GradientBoostingRegressor** | **774.14** | **0.9856** |
 
-**Selected: `GradientBoostingRegressor(n_estimators=500, max_depth=4, learning_rate=0.05)`.**
+**ML v2 re-ran the identical selection process on the new dataset and picked a
+different winner**, `RandomForestRegressor(n_estimators=300, max_depth=12,
+min_samples_leaf=2, random_state=42)`, because GradientBoosting placed last there
+(CV MAE 1,714.71 versus 1,550.00). The selection logic, the candidate set, the
+hyperparameters and the split were not changed — the data was, and the ranking
+followed. Full figures in
+[ML Valuation v2](#ml-valuation-v2--local-synthetic-development-benchmark).
 
-A standard scikit-learn ensemble - no new dependency and no deep learning. It
-beats the Stage 3I Random Forest by ~40% on cross-validated MAE, and a repeated
-cross-validation over five seeds confirmed the ranking is stable
-(779.88 +/- 6.90 versus 1,294.81 +/- 40.59). Boosting fits because depreciation
-has more *shape* than a single formula, and shallow trees regularise themselves,
-which matters at this dataset size.
+Both are standard scikit-learn ensembles — no new dependency, no deep learning.
 
 #### Why the model predicts a ratio, not a rupee amount
 
@@ -589,7 +641,63 @@ Restart the API afterwards; the pipeline is cached on first use.
 
 ### Evaluation metrics
 
-Held-out test split (84 rows), rupee scale:
+**MAE** is the average size of the mistake in rupees - "off by about Rs 1,656 on a
+typical device" for the current local model. Lower is better. **RMSE** is the
+same idea but punishes large errors harder. **R2** is the share of price
+variation explained; 0 means no better than guessing the average, 1 is perfect.
+
+**These are two separate evaluations. Read the label before the number.**
+
+#### ML Valuation v2 — local synthetic-development benchmark
+
+**Not deployed to production.** Produced on branch `ml-valuation-v2`, local only.
+
+- Estimator: `RandomForestRegressor(n_estimators=300, max_depth=12,
+  min_samples_leaf=2, random_state=42)`
+- Training data: the committed **900-row** synthetic dataset from
+  `backend/app/scripts/generate_valuation_dataset.py` (fixed seed `20261007`),
+  generated **independently** of the rule-based formula
+- Holdout split: 180 rows (720 train / 180 test, `test_size=0.2`)
+
+| Predictor | MAE | RMSE | R2 |
+| --- | --- | --- | --- |
+| **ML model (RandomForestRegressor)** | **Rs 1,656.43** | **Rs 5,892.80** | **0.5669** |
+| Baseline: mean-value predictor | Rs 4,377.74 | Rs 8,959.10 | -0.0012 |
+| Baseline: **rule-based estimator** | **Rs 2,358.24** | Rs 5,749.36 | 0.5877 |
+
+#### Baseline comparison — the honest result
+
+**On this synthetic benchmark the ML model has a lower holdout MAE than the
+rule-based baseline** (Rs 1,656.43 versus Rs 2,358.24, better by Rs 701.81).
+That is a reversal of the previous model's result, and it is a genuine one: the
+v2 generator does not import `app/services/valuation.py`, so the rules are no
+longer a restatement of the answer key and this is a real comparison between two
+independent estimators rather than a model being scored against its own source.
+
+**What that comparison does and does not establish:**
+
+- It establishes that on this data the model captured the generator's structure,
+  and that the two estimators are not equivalent.
+- It establishes **nothing about real-world pricing accuracy.** The "ground
+  truth" here is a synthetic generator whose half-lives, recovery values and
+  price distributions are assumptions this project invented, not measurements.
+  Beating a second estimator on invented data is not market validation.
+- The margin is modest and the R2 comparison is actually *worse* for the model
+  (0.5669 versus 0.5877). Neither model dominates the other, and MAE alone does
+  not make the model "better" in any useful sense.
+- Error is heavy-tailed — median roughly Rs 530, but the 99th percentile is in
+  the tens of thousands — because the generator includes a small "stripped for
+  parts" tail that no feature marks. That is irreducible by construction, and it
+  is why RMSE sits far above MAE.
+
+**None of these are production metrics.** They are not deployed, not measured on
+real transactions, and not comparable to the previous model's figures.
+
+#### Previous shipped model / historical baseline
+
+Superseded by v2 and retained for comparison. **Currently running in
+production**, trained on the previous 420-row dataset whose target was generated
+from the rule-based formula. Held-out test split, 84 rows, rupee scale:
 
 | Predictor | MAE | RMSE | R2 |
 | --- | --- | --- | --- |
@@ -597,42 +705,41 @@ Held-out test split (84 rows), rupee scale:
 | Baseline: mean-value predictor | Rs 10,582.17 | Rs 16,363.65 | -0.0190 |
 | Baseline: **rule-based estimator** | **Rs 287.31** | Rs 585.10 | **0.9987** |
 
-**MAE** is the average size of the mistake in rupees - "off by about Rs 822 on a
-typical device". Lower is better. **RMSE** is the same idea but punishes large
-errors harder. **R2** is the share of price variation explained; 0 means no
-better than guessing the average, 1 is perfect.
+**The ML model did not beat the rule-based baseline on that dataset.** The rules
+were ~2.9x more accurate here (MAE Rs 287 vs Rs 822). That is expected rather
+than a defect: the target was *generated from* that formula, so the rules were
+effectively ground truth on that data and no model could beat reproducing it plus
+its irreducible noise. The training script printed this outcome explicitly, the
+metrics sidecar recorded it, and the admin panel displayed it.
 
-#### Baseline comparison - the honest result
-
-**The ML model does not beat the rule-based baseline on this dataset.** The
-rules are ~2.9x more accurate here (MAE Rs 287 vs Rs 822).
-
-That is expected rather than a defect: the target was *generated from* that
-formula, so the rules are effectively ground truth on this data and no model can
-beat reproducing it plus its irreducible noise. The training script prints this
-outcome explicitly, the metrics sidecar records it, and the admin panel displays
-it.
-
-What the comparison does establish honestly:
+What that comparison did establish honestly:
 
 - The pipeline works end to end and generalises (R2 0.9916 held out, four
   candidates compared, stable across seeds).
 - It is far better than a trivial mean predictor, so it learned real structure.
-- **It offers no accuracy advantage over the rules on this data.** Its value is
-  that it learns from data rather than from seven hand-tuned constants - a
-  statement about the future, not a claim of present benefit.
+- **It offered no accuracy advantage over the rules on that data.**
 
 #### Why these metrics are not market accuracy
 
-1. The target is a formula plus noise, so a high R2 shows the function is
-   learnable and nothing more.
-2. **12.6% of target rows sit exactly on the Rs 500 floor**, sharing one
-   identical value. No regression model can separate identical targets, which
-   caps the achievable fit.
-3. Category distributions are implausibly uniform (condition 18.3%-24.0% across
-   five grades) - direct evidence of synthetic generation.
-4. 420 rows across 9 categories and 26 brands is far too few for real pricing.
+This applies to the **ML v2** figures above, which are the ones a reader is most
+likely to mistake for a result:
+
+1. The target is produced by a synthetic generator, so a high R2 shows the
+   function is learnable and nothing more.
+2. **No two rows share an identical target.** All 900 target values are
+   distinct, and no row sits on a universal floor value, so there is no
+   degenerate group that caps the achievable fit.
+3. `device_category` is exactly uniform at 100 rows per category by
+   construction - a deliberate anti-starvation measure that is itself an
+   artificial property, not evidence of market realism.
+4. **900 rows across 9 categories and 26 brands is still nowhere near enough for
+   real pricing**, and ages 0-15 cover only what the generator was told to
+   cover.
 5. There is no real market to validate against.
+6. **The previous model's figures are not a benchmark for these ones.** They come
+   from different data, a different target and a different algorithm, so the two
+   MAEs cannot be compared. The old model's R2 of 0.9916 looks better precisely
+   because its target was the rule-based formula itself.
 
 ### Fallback mechanism
 
@@ -661,10 +768,15 @@ response is a valid valuation labelled with `valuation_method: "ml"` or
 
 ### Limitations of the model itself
 
-- Synthetic training data, generated from the formula it replaces.
-- The rules still score better on it.
+- Synthetic training data, generated independently of the fallback formula.
+- **ML v2 has a lower holdout MAE than the rules on this synthetic benchmark, and
+  that is not a claim about real-world accuracy.** The previous shipped model
+  scored *worse* than the rules on the older dataset; neither result transfers to
+  real pricing, because neither dataset is real.
+- **ML v2 is not deployed.** The model running in production is still the
+  previous one, on the previous dataset.
 - Cannot extrapolate - hence the distribution guard.
-- 12.6% of the target is degenerate.
+- No row shares an identical target, but the whole dataset is still synthetic.
 - `brand` and `device_category` contribute almost nothing (~0.3% and ~0.8%);
   age, working status and condition carry ~92% of the decision.
 - Retraining requires an API restart (the pipeline is cached).
@@ -967,23 +1079,38 @@ that does not.
 
 **About the valuation**
 
-1. **The training data is synthetic.** It was generated from the project's own
-   rule-based formula. The model has never seen a real transaction.
-2. **The metrics do not indicate real-world accuracy.** MAE Rs 822 / R2 0.9916
-   measure how well the model reproduces a formula it was trained on.
+1. **The training data is synthetic.** It is produced by
+   `backend/app/scripts/generate_valuation_dataset.py` (fixed seed `20261007`),
+   independently of the rule-based formula it is compared against. The model has
+   never seen a real transaction.
+2. **The metrics do not indicate real-world accuracy.** The ML v2 benchmark
+   figures (MAE Rs 1,656.43 / RMSE Rs 5,892.80 / R2 0.5669) measure how well the
+   model fits a synthetic generator. The previous shipped model's figures
+   (MAE Rs 822.12 / R2 0.9916) measured something narrower still - how well it
+   reproduced a formula it was trained on. **Neither is a market result, and
+   neither is a production metric.**
 3. **Values are estimates, not offers.** Nothing here is a guaranteed price, an
    exact market price, or a commitment to buy.
 4. **The category reference values are invented** for demonstration.
-4a. **The rule-based estimator still scores better than the ML model on this
-   dataset** (MAE Rs 287 vs Rs 822), because the data was generated from that
-   formula. This is measured and displayed, not hidden.
+4a. **The two benchmark comparisons point in opposite directions, and neither is
+   real.** The previous shipped model scored *worse* than the rule-based
+   estimator (MAE Rs 822 vs Rs 287) because that dataset's target was generated
+   from the rules themselves. ML v2, trained on an independently generated
+   dataset, scores *better* than the rules (MAE Rs 1,656.43 vs Rs 2,358.24). Both
+   figures are measured and displayed; both are measured against synthetic data,
+   so neither says anything about real-world pricing. **ML v2 is not deployed —
+   production still runs the previous model.**
 4b. **A tree ensemble cannot extrapolate.** Before Stage 4B a 15-year-old
    laptop was quoted the same as a 9-year-old one and *more* than the correct
    value. A distribution guard now routes such submissions to the rules.
-4c. **12.6% of the training target sits on the Rs 500 floor** as one identical
-   value, which caps the achievable fit for any regression model.
-5. **The rule-based fallback is the same formula the data was generated from.**
-   It is a working, transparent estimator — not an independent second opinion.
+4c. **The training target has no degenerate group.** All 900 target values
+   are distinct, so unlike the previous dataset no rows share an identical
+   target. Values still approach per-category recovery floors rather than
+   one shared number.
+5. **The rule-based fallback and the dataset generator are independent.** The
+   generator does not import `app/services/valuation.py`, so the fallback is
+   no longer the source of the training data. It remains a working,
+   transparent estimator — and now a genuinely separate second opinion.
 
 **Architecture and engineering**
 
