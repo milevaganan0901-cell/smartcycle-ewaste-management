@@ -17,64 +17,86 @@ Audited in Stage 4B. Every figure below was measured, not estimated.
 | --- | --- |
 | File | `valuation_demo_dataset.csv` |
 | Type | **Synthetic development dataset** |
-| Provenance | Generated in-repo by the project's own rule-based formula plus bounded noise |
+| Provenance | Generated in-repo by the committed generator `app/scripts/generate_valuation_dataset.py`, independently of the rule-based formula |
 | Licence | N/A — original work, created for this project |
-| Records | **420** |
+| Records | **900** |
 | Features | **7** |
 | Target | `estimated_purchase_value` (rupees) |
-| Regenerable | Yes, byte-for-byte, from `random.Random(20260926)` |
+| Regenerable | Yes, byte-for-byte, by `python -m app.scripts.generate_valuation_dataset` (fixed seed `20261007`) |
 | Committed to git | Yes (it is the provenance record for the model) |
+| Content hash (seed `20261007`) | `e2b702876b792ce5e1463fbfac7176e6234bda5f5541dc42ed94ec2c409afa2a` |
 
 ## 2. How the target was produced
 
-`estimated_purchase_value` was computed with the project's **own documented
-rule-based formula** (`app/services/valuation.py`) and then multiplied by a
-uniform noise factor in `[0.93, 1.07]`, with a floor applied afterwards:
+**Changed in ML-v2.** This section previously described a dataset whose target
+was generated *from* the application's own rule-based formula. That has been
+replaced, because it made the formula close to ground truth and meant the model
+was learning to imitate the fallback rather than to price anything.
+
+The current dataset is produced by
+[`backend/app/scripts/generate_valuation_dataset.py`](../app/scripts/generate_valuation_dataset.py),
+fixed seed `20261007`. That module imports **only the Python standard library**
+and does **not** import, read, or reproduce `app/services/valuation.py` or any
+of its constants. It builds each value from its own documented assumptions:
 
 ```
-reference = original_purchase_price (when > 0) else the category reference value
-value     = reference
-           × max(0.25, 0.88 ** age)
-           × condition factor
-           × working-status factor
-           × physical-damage factor
-value     = max(500, value × noise)
+brand_tier   = per-brand price-position multiplier
+latent_price = lognormal(category_mu, category_sigma) x brand_tier
+condition    = drawn from an age-dependent distribution
+age_factor   = 0.5 ** (age / half_life)     <- half_life is per category
+value        = latent_price
+             x age_factor
+             x condition_factor x working_factor x damage_factor
+             x brand_tier
+             x noise x demand_shock x category_market_factor
+value        -> approaches a per-category recovery floor asymptotically
 ```
 
-Stage 4B re-derived this from the CSV and confirmed **372 of 420 rows (88.6%)**
-sit inside the expected `[0.93, 1.07]` noise band once the floor is accounted
-for. The remaining rows are floor-clipped, which inflates the apparent ratio
-against the *unclipped* formula — expected, not an anomaly.
+Every figure in that process - half-lives, recovery values, multiplier ranges,
+price distributions - is a **synthetic assumption chosen so the model has
+something learnable**. None of it is a finding about the e-waste market, and
+none of it is presented as market research.
 
-### The single most important consequence
+### What this buys, and what it does not
 
-**The dataset's target was generated from the rule-based estimator.** That makes
-the rule-based estimator an unusually strong baseline *on this data* — close to
-ground truth rather than merely similar to it. This is measured and reported in
-Stage 4B rather than hidden; see the baseline table in
-[`STAGE_4B.md`](../../docs/STAGE_4B.md).
+| Property | Old 420-row dataset | Current 900-row dataset |
+| --- | --- | --- |
+| Generated from the rule-based formula | Yes - circular | **No** - independent process |
+| Age range | 0-9 | **0-15** |
+| Universal Rs 500 floor | Yes (12.6% of targets sat on it) | **No** - per-category recovery floors |
+| Rows | 420 | **900** |
+| Regenerable by | an uncommitted generator | **a committed generator, seed `20261007`** |
+
+The model is now genuinely worse at fitting this data than the rule-based
+estimator was, because the data no longer hands it the answer. That is the
+intended outcome. **Metrics measured against this dataset describe fit to the
+generator's assumptions, not real-world accuracy.**
 
 ## 3. Measured data-quality audit
 
-All measured on the committed file.
+All figures below were measured on the committed 900-row file.
 
 ### Missing values
 
 | Column | Missing | Share |
 | --- | --- | --- |
-| `original_purchase_price` | 63 | 15.0% |
-| all six other columns | 0 | 0% |
+| `original_purchase_price` | 189 | 21.0% |
+| all other columns | 0 | 0% |
 
 The missing price is deliberate and realistic: the field is optional in the
 Sell Device form, and the training pipeline imputes it (median for numeric,
-most-frequent for categorical) rather than assuming it is present.
+most-frequent for categorical) rather than assuming it is present. Note that
+the generator computes a **latent** price for every row and only records it for
+roughly 80% of them, so a missing price is absent from the file without making
+the target inconsistent.
 
 ### Duplicates
 
 | Check | Result |
 | --- | --- |
-| Duplicate feature tuples (excluding target) | **0** — 420/420 unique |
+| Duplicate feature tuples (excluding target) | **0** - 900/900 unique |
 | Fully identical rows | **0** |
+| Distinct target values | **900** of 900 |
 
 Real-world datasets essentially always contain duplicates. Zero duplicates is
 itself a sign of synthetic generation, and is recorded here as such rather than
@@ -84,34 +106,41 @@ presented as a quality win.
 
 | Check | Result |
 | --- | --- |
-| Negative ages | 0 (range 0–9, mean 4.36) |
-| Non-positive purchase prices | 0 (range ₹600 – ₹236,500, mean ₹47,024) |
-| Negative or zero targets | 0 (range ₹500 – ₹71,724, mean ₹9,695) |
-| **Targets exactly on the ₹500 floor** | **53 (12.6%)** |
+| Negative ages | 0 (range 0-15, mean 6.89) |
+| Non-positive purchase prices | 0 (range Rs 665.77 - Rs 232,239.44, mean Rs 29,444.06, n=711) |
+| Negative or zero targets | 0 (range Rs 37.49 - Rs 100,438.03, mean Rs 4,369.90) |
+| **Targets exactly on a single shared value** | **0 (0.00%)** |
 
-The ₹500 floor is a genuine modelling constraint, not a defect. Those 53 rows
-share one identical target, so **no regression model can separate them** — they
-contribute irreducible error and put a ceiling on the achievable fit. The
-training run reports this in `metrics_ceiling_note`.
+The old dataset clamped every value at a universal Rs 500, so 53 rows (12.6%)
+shared one identical target and no regression model could separate them. That
+constraint is gone: each category now converges on its own recovery floor
+(Rs 55 for Accessories up to Rs 410 for Laptop), the floor itself carries
+jitter, and the approach is asymptotic rather than a hard clamp. All 900
+targets are distinct.
 
 ### Category distributions
 
 | Column | Distinct | Distribution |
 | --- | --- | --- |
-| `device_category` | 9 | 9.0% – 12.9% (near-uniform) |
-| `brand` | 26 | 1.2% – 9.5%, smooth taper |
-| `condition` | 5 | 18.3% – 24.0% (near-uniform) |
-| `working_status` | 3 | 29.3% – 38.1% |
-| `physical_damage` | 3 | 32.9% – 34.0% (near-uniform) |
+| `device_category` | 9 | 11.1% - 11.1% (exactly 100 rows each) |
+| `brand` | 26 | 0.8% - 14.8% |
+| `age` | 16 | 5.0% - 8.0% (45-72 rows per age) |
+| `condition` | 5 | 11.7% - 27.1% |
+| `working_status` | 3 | 21.3% - 51.7% |
+| `physical_damage` | 3 | 13.3% - 64.0% |
 
-**These distributions are implausibly balanced.** Real survey or transaction
-data is never within a few points of uniform across condition grades. The
-near-uniform spread is direct evidence of uniform random sampling during
-generation, and is a further reason the model must not be read as
-market-accurate.
+`device_category` is exactly uniform by construction (100 rows each, so no
+category can be starved). That is still an artificial property and is recorded
+as such. The other columns are **no longer uniform**: `condition` and
+`working_status` are deliberately skewed, and `condition` is correlated with
+age because the generator draws it from an age-dependent distribution -
+measured P(Not Working) rises from 9.2% at ages 0-2 to 32.6% at ages 13-15,
+while P(Excellent) falls from 25.1% to 3.0%. That correlation is a real
+property of collections data and could not be produced by uniform sampling.
 
-Brands are internally consistent with their categories (a Laptop never carries
-a printer brand), so the generator was at least coherent.
+Brands remain internally consistent with their categories (a Printer never
+carries a phone brand), because the generator draws from a per-category brand
+pool.
 
 ## 4. Leakage review
 
@@ -207,5 +236,15 @@ It writes `valuation_model.joblib` and `valuation_model_metrics.json`. Restart
 the API afterwards — the pipeline is cached on first use.
 
 The **dataset** is not regenerated by the training script; it is a committed
-file. The original generator used `random.Random(20260926)`, so the CSV can be
-reproduced byte-for-byte if needed.
+file, and it is regenerated on demand by its own committed generator at
+`backend/app/scripts/generate_valuation_dataset.py`:
+
+```bash
+cd backend
+python -m app.scripts.generate_valuation_dataset
+```
+
+The generator uses the fixed seed `20261007`. Running it with that seed
+rewrites a byte-identical CSV, so the committed dataset can be reproduced and
+verified exactly. Use `--seed <n>` to produce a different dataset, and
+`--check` to print the row count and SHA-256 digest without writing the file.

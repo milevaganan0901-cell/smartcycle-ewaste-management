@@ -212,6 +212,89 @@ def run_valuation_unit_checks(print_summary: bool = True) -> int:
             check("an out-of-range age never returns a flat, inflated ML price",
                   all(v is None for v in flat.values()), str(flat))
 
+            # ---- three-tier age policy -------------------------------------
+            # Every boundary below is derived from the model artifact's recorded
+            # training distribution plus the schema's sanity cap. Nothing here
+            # hardcodes the current dataset's range, so retraining on a different
+            # age range moves these expectations automatically instead of making
+            # them quietly wrong.
+            section("Three-tier age policy (invalid / out-of-distribution / ML)")
+            from pydantic import ValidationError
+
+            from app.schemas.device import MAX_DEVICE_AGE, DeviceCreate
+
+            supported_low, supported_high = age_range
+            tolerance = ml_valuation.AGE_TOLERANCE
+            accepted_low = supported_low - tolerance
+            accepted_high = supported_high + tolerance
+            print(f"  {DIM}supported {supported_low}-{supported_high}, tolerance {tolerance}, "
+                  f"ML accepts {accepted_low}-{accepted_high}, API cap {MAX_DEVICE_AGE}{RESET}")
+
+            def priced_by(age: int) -> str:
+                return value_device(ValuationInput(**{**base, "age": age})).valuation_method
+
+            def schema_accepts(age: int) -> bool:
+                try:
+                    DeviceCreate(
+                        device_category=base["device_category"], brand=base["brand"],
+                        model="Test Model", age=age, condition=base["condition"],
+                        working_status=base["working_status"], location="Test",
+                    )
+                except ValidationError:
+                    return False
+                return True
+
+            # Tier 1: outside the API's valid span -> rejected, never a fallback.
+            for invalid_age in (-1, -5, MAX_DEVICE_AGE + 1, 1000):
+                check(f"age {invalid_age} is rejected as invalid input (422), not valued",
+                      not schema_accepts(invalid_age), "schema accepted it")
+
+            # Tier 3: inside the supported distribution -> the model prices it.
+            in_distribution = [a for a in (0, supported_high // 3, supported_high)
+                               if supported_low <= a <= supported_high]
+            check("every age inside the supported training range is priced by the ML model",
+                  all(priced_by(a) == "ml" for a in in_distribution),
+                  str({a: priced_by(a) for a in in_distribution}))
+            check("the lowest supported age is priced by the ML model",
+                  priced_by(supported_low) == "ml", priced_by(supported_low))
+
+            # Tier 3 boundary + tolerance: one year past the trained edge the model
+            # still answers, because a tree returns its boundary-year leaf there.
+            # Asserted explicitly because it is a deliberate policy choice, not an
+            # accident of the trained range.
+            check(f"age {accepted_high} (trained edge {supported_high} + {tolerance}) uses the ML model",
+                  priced_by(accepted_high) == "ml", priced_by(accepted_high))
+            boundary_value = ml_valuation.predict_estimated_value(
+                ValuationInput(**{**base, "age": accepted_high}))
+            trained_edge_value = ml_valuation.predict_estimated_value(
+                ValuationInput(**{**base, "age": supported_high}))
+            check("the tolerated boundary year returns the nearest learned value, not a spike",
+                  boundary_value == trained_edge_value,
+                  f"{boundary_value} vs {trained_edge_value}")
+
+            # Tier 2: valid age, outside the distribution -> rule_based fallback.
+            first_ood = accepted_high + 1
+            check(f"age {first_ood} (one past the tolerated edge) falls back to the rules",
+                  priced_by(first_ood) == "rule_based", priced_by(first_ood))
+            for ood_age in (first_ood, MAX_DEVICE_AGE - 1, MAX_DEVICE_AGE):
+                if ood_age > accepted_high and schema_accepts(ood_age):
+                    check(f"age {ood_age} is valid input but valued by the rule-based estimator",
+                          priced_by(ood_age) == "rule_based", priced_by(ood_age))
+
+            # Tier 2 must not change the fallback's own arithmetic.
+            from app.services.valuation import estimate_device_value
+
+            fallback_input = ValuationInput(**{**base, "age": MAX_DEVICE_AGE})
+            check("the fallback's own value is untouched by the ML guard",
+                  estimate_device_value(fallback_input).estimated_purchase_value
+                  == value_device(fallback_input).estimated_purchase_value)
+
+            # The API's valid span must be wider than the ML span, or valid input
+            # would have nowhere to go but the rules for no stated reason.
+            check("the API's valid age span is at least as wide as the ML span",
+                  MAX_DEVICE_AGE >= accepted_high,
+                  f"cap {MAX_DEVICE_AGE} vs ML up to {accepted_high}")
+
         # Brand is free text in the Sell Device form, so an unseen brand must not
         # silently downgrade the ML path. It carries ~0.3% of model importance.
         unseen_brand = value_device(ValuationInput(**{**base, "brand": "Totally New Brand"}))
@@ -605,6 +688,20 @@ def main() -> int:
          "working_status": "Fully Working", "location": "Nowhere"},
     )
     check("negative age rejected", status == 422, f"got {status}")
+
+    # An age above the hard sanity cap must also be a validation error, never a
+    # silent fallback: a device that old is not a resale candidate, so quoting any
+    # value for it would be misleading. The cap is read from the schema rather than
+    # written here, so this check cannot drift from the real limit.
+    from app.schemas.device import MAX_DEVICE_AGE
+
+    for absurd_age in (MAX_DEVICE_AGE + 1, 1000):
+        status, body = client.call(
+            "POST", "/api/devices",
+            {"device_category": "Laptop", "brand": "X", "model": "Y", "age": absurd_age,
+             "condition": "Good", "working_status": "Fully Working", "location": "Nowhere"},
+        )
+        check(f"age {absurd_age} rejected as invalid input", status == 422, f"got {status}")
     status, body = client.call("POST", "/api/devices", {"device_category": "Laptop"})
     check("incomplete device body rejected", status == 422, f"got {status}")
 

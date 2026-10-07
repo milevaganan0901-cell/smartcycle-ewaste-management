@@ -50,14 +50,31 @@ FEATURE_COLUMNS = [
     "original_purchase_price",
 ]
 
-# How far outside the trained age range a submission may sit and still be priced
-# by the model. Deliberately zero: a tree is constant beyond its outermost split,
-# so a value one year outside the trained range receives exactly the same
-# prediction as the boundary year rather than a slightly-adjusted one. Measured
-# on this dataset that is a ~25% overvaluation (Rs 16,060 instead of Rs 12,811 at
-# age 10), so there is nothing to gain from slack and a real cost. The
-# rule-based estimator extrapolates correctly, so it is used instead.
-AGE_TOLERANCE = 0
+# How far beyond the trained age range a submission may sit and still be priced
+# by the model, in years.
+#
+# The trained range is NOT hardcoded here. It is read at request time from
+# `training_distribution` in the model artifact (written by the training script),
+# so the guard can never drift from the data the model actually saw. With the
+# current 0-15 dataset that means ages 0-15 are in-distribution and age 16 is the
+# first year admitted by this tolerance.
+#
+# Why one year, and what it costs. A tree ensemble is piecewise constant past its
+# outermost split, so an out-of-range age does not get a slightly-adjusted price;
+# it gets the boundary year's price verbatim. Measured on the current artifact,
+# a 15-year-old and a 16-year-old laptop of otherwise identical specification
+# both receive exactly Rs 6,764 from the model. So admitting one year of slack
+# does not introduce a discontinuity or a spike - it returns the closest learned
+# value instead of handing an entire age band to the rule-based estimator.
+#
+# The trade-off, stated plainly: at ages just past the trained edge the model is
+# reporting the last value it actually learned rather than extrapolating a trend,
+# and that value is far below what the rule-based estimator produces for the same
+# device on this dataset. One year is a deliberately small slack, not a licence to
+# extrapolate. Beyond `age_max + AGE_TOLERANCE` the rule-based estimator takes
+# over, because it extrapolates a real depreciation curve instead of repeating a
+# leaf.
+AGE_TOLERANCE = 1
 
 _lock = threading.Lock()
 _pipeline: Any | None = None
@@ -154,15 +171,31 @@ def _is_within_training_distribution(data) -> bool:
     except (TypeError, ValueError):
         return False
 
+    # Bounds come from the artifact's recorded training distribution, never from
+    # literals here, so retraining with a different age range moves this boundary
+    # automatically. `low`/`high` are the supported range; AGE_TOLERANCE is slack
+    # either side of it.
     low = _metadata.get("age_min")
     high = _metadata.get("age_max")
     if low is not None and high is not None:
-        if age < int(low) - AGE_TOLERANCE or age > int(high) + AGE_TOLERANCE:
+        accepted_low = int(low) - AGE_TOLERANCE
+        accepted_high = int(high) + AGE_TOLERANCE
+        if age < accepted_low or age > accepted_high:
             logger.info(
-                "Submitted age %s is outside the trained range %s-%s; using rule-based valuation.",
-                age, low, high,
+                "Submitted age %s is outside the acceptable range %s-%s "
+                "(trained %s-%s plus %s year tolerance); using rule-based valuation.",
+                age, accepted_low, accepted_high, low, high, AGE_TOLERANCE,
             )
             return False
+        if age > int(high) or age < int(low):
+            # Inside the tolerance but outside the trained range. The model will
+            # return its boundary-year leaf, which is the closest learned value
+            # available; worth logging because it is not a genuine prediction.
+            logger.info(
+                "Submitted age %s is beyond the trained range %s-%s but within "
+                "%s year tolerance; the model will return its nearest learned value.",
+                age, low, high, AGE_TOLERANCE,
+            )
 
     known = _metadata.get("known_categories") or {}
     # Brand is deliberately NOT guarded. Measured on this dataset it carries
